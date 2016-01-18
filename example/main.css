@@ -1,0 +1,23 @@
+.class {
+  margin: -10px .5vh;
+  padding: 5vmin 9.5px;
+  border: 3px solid black;
+  font-size: 14px;
+  line-height: 20px;
+}
+.class2 {
+  font-size: 20px;
+  line-height: 30px;
+}
+@media (min-width: 750px) {
+  .class3 {
+    font-size: 16px;
+    line-height: 22px;
+  }
+}
+
+/*
+.class {
+    font-size: 16px;
+}
+*/
