@@ -6,10 +6,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:KODerFunk/postcss-px-to-viewport.git"
+    "url": "git@github.com:evrone/postcss-px-to-viewport.git"
   },
-  "bugs": "https://github.com/KODerFunk/postcss-px-to-viewport/issues",
-  "homepage": "https://github.com/KODerFunk/postcss-px-to-viewport",
+  "bugs": "https://github.com/evrone/postcss-px-to-viewport/issues",
+  "homepage": "https://github.com/evrone/postcss-px-to-viewport",
   "main": "index.js",
   "keywords": [
     "css",
