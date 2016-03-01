@@ -1,11 +1,14 @@
 .class {
   margin: -10px .5vh;
-  padding: 5vmin 9.5px;
+  padding: 5vmin 9.5px 1px;
   border: 3px solid black;
+  border-bottom-width: 1px;
   font-size: 14px;
   line-height: 20px;
 }
 .class2 {
+  border: 1px solid black;
+  margin-bottom: 1px;
   font-size: 20px;
   line-height: 30px;
 }

@@ -17,15 +17,14 @@ var defaults = {
   unitPrecision: 5,
   viewportUnit: 'vw',
   selectorBlackList: [],
-  //propWhiteList: ['font', 'font-size', 'line-height', 'letter-spacing'],
-  replace: true,
+  minPixelValue: 1,
   mediaQuery: false
 };
 
 module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
   var opts = objectAssign({}, defaults, options);
-  var pxReplace = createPxReplace(opts.viewportWidth, opts.unitPrecision, opts.viewportUnit);
+  var pxReplace = createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, opts.viewportUnit);
 
   return function (css) {
 
@@ -33,16 +32,8 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
       // This should be the fastest test and will remove most declarations
       if (decl.value.indexOf('px') === -1) return;
 
-      // if (opts.propWhiteList.length && opts.propWhiteList.indexOf(decl.prop) === -1) return;
-
       if (blacklistedSelector(opts.selectorBlackList, decl.parent.selector)) return;
 
-      //var value = decl.value.replace(pxRegex, pxReplace);
-      //
-      ////// if viewport unit already exists, do not replace
-      ////if (declarationExists(decl.parent, decl.prop, value)) return;
-      //
-      //decl.value = value;
       decl.value = decl.value.replace(pxRegex, pxReplace);
     });
 
@@ -56,10 +47,11 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
   };
 });
 
-function createPxReplace(viewportSize, unitPrecision, viewportUnit) {
+function createPxReplace(viewportSize, minPixelValue, unitPrecision, viewportUnit) {
   return function (m, $1) {
     if (!$1) return m;
     var pixels = parseFloat($1);
+    if (pixels <= minPixelValue) return m;
     return toFixed((pixels / viewportSize * 100), unitPrecision) + viewportUnit;
   };
 }
