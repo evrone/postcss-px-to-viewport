@@ -13,7 +13,7 @@ var pxRegex = /"[^"]+"|'[^']+'|url\([^\)]+\)|(\d*\.?\d+)px/ig;
 
 var defaults = {
   viewportWidth: 320,
-  viewportHeight: 568,
+  viewportHeight: 568, // not now used; TODO: need for different units and math for different properties
   unitPrecision: 5,
   viewportUnit: 'vw',
   selectorBlackList: [],
@@ -61,12 +61,6 @@ function toFixed(number, precision) {
     wholeNumber = Math.floor(number * multiplier);
   return Math.round(wholeNumber / 10) * 10 / multiplier;
 }
-
-//function declarationExists(decls, prop, value) {
-//    return decls.some(function (decl) {
-//        return (decl.prop === prop && decl.value === value);
-//    });
-//}
 
 function blacklistedSelector(blacklist, selector) {
   if (typeof selector !== 'string') return;
