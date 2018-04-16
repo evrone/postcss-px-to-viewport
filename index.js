@@ -16,6 +16,7 @@ var defaults = {
   viewportHeight: 568, // not now used; TODO: need for different units and math for different properties
   unitPrecision: 5,
   viewportUnit: 'vw',
+  fontViewportUnit: 'vw',  // vmin is more suitable.
   selectorBlackList: [],
   minPixelValue: 1,
   mediaQuery: false
@@ -34,7 +35,9 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
       if (blacklistedSelector(opts.selectorBlackList, decl.parent.selector)) return;
 
-      decl.value = decl.value.replace(pxRegex, pxReplace);
+      var unit = getUnit(decl.prop, opts)
+
+      decl.value = decl.value.replace(pxRegex, createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, unit));
     });
 
     if (opts.mediaQuery) {
@@ -46,6 +49,10 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
   };
 });
+
+function getUnit (prop, opts) { 
+  return prop.indexOf('font') === -1 ? opts.viewportUnit : opts.fontViewportUnit;
+}
 
 function createPxReplace(viewportSize, minPixelValue, unitPrecision, viewportUnit) {
   return function (m, $1) {
