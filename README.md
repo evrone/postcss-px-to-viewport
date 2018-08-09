@@ -87,19 +87,23 @@ fs.writeFile('main-viewport.css', processedCss, function (err) {
 Default:
 ```js
 {
+  unitToConvert: 'px',
   viewportWidth: 320,
-  viewportHeight: 568,
+  viewportHeight: 568, // not now used; TODO: need for different units and math for different properties
   unitPrecision: 5,
   viewportUnit: 'vw',
+  fontViewportUnit: 'vw',  // vmin is more suitable.
   selectorBlackList: [],
   minPixelValue: 1,
   mediaQuery: false
 }
 ```
+- `unitToConvert` (String) unit to convert, by default, it is px.
 - `viewportWidth` (Number) The width of the viewport.
 - `viewportHeight` (Number) The height of the viewport.
 - `unitPrecision` (Number) The decimal numbers to allow the REM units to grow to.
 - `viewportUnit` (String) Expected units.
+- `fontViewportUnit` (String) Expected units for font.
 - `selectorBlackList` (Array) The selectors to ignore and leave as px.
     - If value is string, it checks to see if selector contains the string.
         - `['body']` will match `.body-class`
@@ -107,7 +111,6 @@ Default:
         - `[/^body$/]` will match `body` but not `.body`
 - `minPixelValue` (Number) Set the minimum pixel value to replace.
 - `mediaQuery` (Boolean) Allow px to be converted in media queries.
-
 
 ### Use with gulp-postcss
 
