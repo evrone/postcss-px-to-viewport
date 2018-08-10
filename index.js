@@ -51,7 +51,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
   };
 });
 
-function getUnit (prop, opts) {
+function getUnit(prop, opts) {
   return prop.indexOf('font') === -1 ? opts.viewportUnit : opts.fontViewportUnit;
 }
 
