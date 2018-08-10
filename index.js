@@ -3,19 +3,13 @@
 var postcss = require('postcss');
 var objectAssign = require('object-assign');
 
-// excluding regex trick: http://www.rexegg.com/regex-best-trick.html
-// Not anything inside double quotes
-// Not anything inside single quotes
-// Not anything inside url()
-// Any digit followed by px
-// !singlequotes|!doublequotes|!url()|pixelunit
-var pxRegex = /"[^"]+"|'[^']+'|url\([^\)]+\)|(\d*\.?\d+)px/ig;
-
 var defaults = {
+  unitToConvert: 'px',
   viewportWidth: 320,
   viewportHeight: 568, // not now used; TODO: need for different units and math for different properties
   unitPrecision: 5,
   viewportUnit: 'vw',
+  fontViewportUnit: 'vw',  // vmin is more suitable.
   selectorBlackList: [],
   minPixelValue: 1,
   mediaQuery: false
@@ -26,26 +20,40 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
   var opts = objectAssign({}, defaults, options);
   var pxReplace = createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, opts.viewportUnit);
 
+  // excluding regex trick: http://www.rexegg.com/regex-best-trick.html
+  // Not anything inside double quotes
+  // Not anything inside single quotes
+  // Not anything inside url()
+  // Any digit followed by px
+  // !singlequotes|!doublequotes|!url()|pixelunit
+  var pxRegex = new RegExp('"[^"]+"|\'[^\']+\'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)' + opts.unitToConvert, 'ig')
+
   return function (css) {
 
     css.walkDecls(function (decl, i) {
       // This should be the fastest test and will remove most declarations
-      if (decl.value.indexOf('px') === -1) return;
+      if (decl.value.indexOf(opts.unitToConvert) === -1) return;
 
       if (blacklistedSelector(opts.selectorBlackList, decl.parent.selector)) return;
 
-      decl.value = decl.value.replace(pxRegex, pxReplace);
+      var unit = getUnit(decl.prop, opts)
+
+      decl.value = decl.value.replace(pxRegex, createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, unit));
     });
 
     if (opts.mediaQuery) {
       css.walkAtRules('media', function (rule) {
-        if (rule.params.indexOf('px') === -1) return;
+        if (rule.params.indexOf(opts.unitToConvert) === -1) return;
         rule.params = rule.params.replace(pxRegex, pxReplace);
       });
     }
 
   };
 });
+
+function getUnit(prop, opts) {
+  return prop.indexOf('font') === -1 ? opts.viewportUnit : opts.fontViewportUnit;
+}
 
 function createPxReplace(viewportSize, minPixelValue, unitPrecision, viewportUnit) {
   return function (m, $1) {
