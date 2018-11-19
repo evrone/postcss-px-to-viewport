@@ -32,11 +32,17 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
     
     css.walkDecls(function (decl, i) {
       
+      // Add exlclude option to ignore some files like 'node_modules' 
       if (opts.exclude) {
-        if (Object.prototype.toString.call(opts.exclude) !== '[object RegExp]') {
-          throw new Error('options.exclude should be RegExp!')
+        if (Object.prototype.toString.call(opts.exclude) === '[object RegExp]') {
+          if (!handleExclude(opts.exclude, decl.source.input.file)) return;
+        } else if (Object.prototype.toString.call(opts.exclude) === '[object Array]') {
+          for (let i = 0; i < opts.exclude.length; ++i) {
+            if (!handleExclude(opts.exclude[i], decl.source.input.file)) return;
+          }
+        } else {
+          throw new Error('options.exclude should be RegExp or Array!');
         }
-        if (decl.source.input.file.match(opts.exclude) !== null) return;
       }
       
       // This should be the fastest test and will remove most declarations
@@ -58,6 +64,14 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
   };
 });
+
+function handleExclude (reg, file) {
+  if (Object.prototype.toString.call(reg) !== '[object RegExp]') {
+    throw new Error('options.exclude should be RegExp!');
+  }
+  if (file.match(reg) !== null) return false;
+  return true;
+} 
 
 function getUnit(prop, opts) {
   return prop.indexOf('font') === -1 ? opts.viewportUnit : opts.fontViewportUnit;
