@@ -29,8 +29,16 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
   var pxRegex = new RegExp('"[^"]+"|\'[^\']+\'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)' + opts.unitToConvert, 'ig')
 
   return function (css) {
-
+    
     css.walkDecls(function (decl, i) {
+      
+      if (opts.exclude) {
+        if (Object.prototype.toString.call(opts.exclude) !== '[object RegExp]') {
+          throw new Error('options.exclude should be RegExp!')
+        }
+        if (decl.source.input.file.match(opts.exclude) !== null) return;
+      }
+      
       // This should be the fastest test and will remove most declarations
       if (decl.value.indexOf(opts.unitToConvert) === -1) return;
 
