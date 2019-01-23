@@ -31,7 +31,7 @@
     "postcss-plugin"
   ],
   "dependencies": {
-    "object-assign": "^4.1.0",
-    "postcss": ">=5.2.10"
+    "object-assign": "^4.0.1",
+    "postcss": ">=5.0.2"
   }
 }
