@@ -36,6 +36,13 @@ describe('px-to-viewport', function() {
 
     expect(processed).toBe(expected);
   });
+
+  it('should not add properties that already exist', function () {
+      var expected = '.rule { font-size: 16px; font-size: 5vw; }';
+      var processed = postcss(pxToViewport()).process(expected).css;
+
+      expect(processed).toBe(expected);
+  });
 });
 
 describe('value parsing', function() {
@@ -192,6 +199,18 @@ describe('minPixelValue', function () {
       var rules = '.rule { border: 1px solid #000; font-size: 16px; margin: 1px 10px; }';
       var expected = '.rule { border: 1px solid #000; font-size: 5vw; margin: 1px 3.125vw; }';
       var processed = postcss(pxToViewport(options)).process(rules).css;
+
+      expect(processed).toBe(expected);
+  });
+});
+
+describe('replace', function () {
+  it('should leave fallback pixel unit with root em value', function () {
+      var options = {
+          replace: false
+      };
+      var processed = postcss(pxToViewport(options)).process(basicCSS).css;
+      var expected = '.rule { font-size: 15px; font-size: 4.6875vw }';
 
       expect(processed).toBe(expected);
   });

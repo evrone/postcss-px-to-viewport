@@ -12,7 +12,8 @@ var defaults = {
   fontViewportUnit: 'vw',  // vmin is more suitable.
   selectorBlackList: [],
   minPixelValue: 1,
-  mediaQuery: false
+  mediaQuery: false,
+  replace: true
 };
 
 module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
@@ -36,9 +37,16 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
       if (blacklistedSelector(opts.selectorBlackList, decl.parent.selector)) return;
 
-      var unit = getUnit(decl.prop, opts)
+      var unit = getUnit(decl.prop, opts);
+      var value = decl.value.replace(pxRegex, createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, unit));
 
-      decl.value = decl.value.replace(pxRegex, createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, unit));
+      if (declarationExists(decl.parent, decl.prop, value)) return;
+
+      if (opts.replace) {
+        decl.value = value;
+      } else {
+        decl.parent.insertAfter(i, decl.clone({ value: value }));
+      }
     });
 
     if (opts.mediaQuery) {
@@ -76,4 +84,10 @@ function blacklistedSelector(blacklist, selector) {
     if (typeof regex === 'string') return selector.indexOf(regex) !== -1;
     return selector.match(regex);
   });
+}
+
+function declarationExists(decls, prop, value) {
+    return decls.some(function (decl) {
+        return (decl.prop === prop && decl.value === value);
+    });
 }
