@@ -2,6 +2,7 @@
 
 var postcss = require('postcss');
 var objectAssign = require('object-assign');
+var { createPropListMatcher } = require('./src/prop-list-matcher');
 
 var defaults = {
   unitToConvert: 'px',
@@ -11,6 +12,7 @@ var defaults = {
   viewportUnit: 'vw',
   fontViewportUnit: 'vw',  // vmin is more suitable.
   selectorBlackList: [],
+  propList: ['*'],
   minPixelValue: 1,
   mediaQuery: false
 };
@@ -27,14 +29,16 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
   // Any digit followed by px
   // !singlequotes|!doublequotes|!url()|pixelunit
   var pxRegex = new RegExp('"[^"]+"|\'[^\']+\'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)' + opts.unitToConvert, 'ig')
+  var satisfyPropList = createPropListMatcher(opts.propList);
 
   return function (css) {
 
     css.walkDecls(function (decl, i) {
-      // This should be the fastest test and will remove most declarations
-      if (decl.value.indexOf(opts.unitToConvert) === -1) return;
-
-      if (blacklistedSelector(opts.selectorBlackList, decl.parent.selector)) return;
+      if (
+        decl.value.indexOf(opts.unitToConvert) === -1 ||
+        !satisfyPropList(decl.prop) || 
+        blacklistedSelector(opts.selectorBlackList, decl.parent.selector)
+       ) return;
 
       var unit = getUnit(decl.prop, opts)
 
