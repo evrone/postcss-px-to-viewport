@@ -57,6 +57,17 @@ describe('value parsing', function() {
 
     expect(processed).toBe(expected);
   });
+
+  it('should not replace values with an uppercase P or X', function () {
+    var options = {
+        propList: ['*']
+    };
+    var rules = '.rule { margin: 12px calc(100% - 14PX); height: calc(100% - 20px); font-size: 12Px; line-height: 16px; }';
+    var expected = '.rule { margin: 3.75vw calc(100% - 14PX); height: calc(100% - 6.25vw); font-size: 12Px; line-height: 5vw; }';
+    var processed = postcss(pxToViewport(options)).process(rules).css;
+
+    expect(processed).toBe(expected);
+  });
 });
 
 describe('unitToConvert', function() {
