@@ -184,6 +184,38 @@ describe('mediaQuery', function () {
   });
 });
 
+describe('propList', function () {
+  it('should only replace properties in the prop list', function () {
+      var css = '.rule { font-size: 16px; margin: 16px; margin-left: 5px; padding: 5px; padding-right: 16px }';
+      var expected = '.rule { font-size: 5vw; margin: 5vw; margin-left: 5px; padding: 5px; padding-right: 5vw }';
+      var options = {
+          propList: ['*font*', 'margin*', '!margin-left', '*-right', 'pad']
+      };
+      var processed = postcss(pxToViewport(options)).process(css).css;
+
+      expect(processed).toBe(expected);
+  });
+
+  it('should only replace properties in the prop list with wildcard', function () {
+      var css = '.rule { font-size: 16px; margin: 16px; margin-left: 5px; padding: 5px; padding-right: 16px }';
+      var expected = '.rule { font-size: 16px; margin: 5vw; margin-left: 5px; padding: 5px; padding-right: 16px }';
+      var options = {
+          propList: ['*', '!margin-left', '!*padding*', '!font*']
+      };
+      var processed = postcss(pxToViewport(options)).process(css).css;
+
+      expect(processed).toBe(expected);
+  });
+
+  it('should replace all properties when prop list is not given', function () {
+      var rules = '.rule { margin: 16px; font-size: 15px }';
+      var expected = '.rule { margin: 5vw; font-size: 4.6875vw }';
+      var processed = postcss(pxToViewport()).process(rules).css;
+
+      expect(processed).toBe(expected);
+  });
+});
+
 describe('minPixelValue', function () {
   it('should not replace values below minPixelValue', function () {
       var options = {

@@ -18,7 +18,7 @@ var defaults = {
 };
 
 module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
-
+  
   var opts = objectAssign({}, defaults, options);
   var pxReplace = createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, opts.viewportUnit);
 
