@@ -33,7 +33,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
     css.walkDecls(function (decl, i) {
       
       // Add exlclude option to ignore some files like 'node_modules' 
-      if (opts.exclude) {
+      if (opts.exclude && decl.source.input.file) {
         if (Object.prototype.toString.call(opts.exclude) === '[object RegExp]') {
           if (!handleExclude(opts.exclude, decl.source.input.file)) return;
         } else if (Object.prototype.toString.call(opts.exclude) === '[object Array]') {
