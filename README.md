@@ -91,6 +91,7 @@ Default:
   viewportWidth: 320,
   viewportHeight: 568, // not now used; TODO: need for different units and math for different properties
   unitPrecision: 5,
+  propList: ['*'],
   viewportUnit: 'vw',
   fontViewportUnit: 'vw',  // vmin is more suitable.
   selectorBlackList: [],
@@ -101,7 +102,13 @@ Default:
 - `unitToConvert` (String) unit to convert, by default, it is px.
 - `viewportWidth` (Number) The width of the viewport.
 - `viewportHeight` (Number) The height of the viewport.
-- `unitPrecision` (Number) The decimal numbers to allow the REM units to grow to.
+- `unitPrecision` (Number) The decimal numbers to allow the vw units to grow to.
+- `propList` (Array) The properties that can change from px to vw.
+  - Values need to be exact matches.
+  - Use wildcard * to enable all properties. Example: ['*']
+  - Use * at the start or end of a word. (['*position*'] will match background-position-y)
+  - Use ! to not match a property. Example: ['*', '!letter-spacing']
+  - Combine the "not" prefix with the other prefixes. Example: ['*', '!font*']
 - `viewportUnit` (String) Expected units.
 - `fontViewportUnit` (String) Expected units for font.
 - `selectorBlackList` (Array) The selectors to ignore and leave as px.
