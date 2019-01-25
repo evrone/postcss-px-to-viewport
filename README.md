@@ -95,6 +95,7 @@ Default:
   fontViewportUnit: 'vw',  // vmin is more suitable.
   selectorBlackList: [],
   minPixelValue: 1,
+  replace: true,
   mediaQuery: false
 }
 ```
@@ -111,6 +112,7 @@ Default:
         - `[/^body$/]` will match `body` but not `.body`
 - `minPixelValue` (Number) Set the minimum pixel value to replace.
 - `mediaQuery` (Boolean) Allow px to be converted in media queries.
+- `replace` (Boolean) replaces rules containing rems instead of adding fallbacks.
 
 ### Use with gulp-postcss
 
