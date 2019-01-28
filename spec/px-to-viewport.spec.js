@@ -37,6 +37,13 @@ describe('px-to-viewport', function() {
     expect(processed).toBe(expected);
   });
 
+  it('should remain unitless if 0', function () {
+    var expected = '.rule { font-size: 0px; font-size: 0; }';
+    var processed = postcss(pxToViewport()).process(expected).css;
+
+    expect(processed).toBe(expected);
+  });
+
   it('should not add properties that already exist', function () {
       var expected = '.rule { font-size: 16px; font-size: 5vw; }';
       var processed = postcss(pxToViewport()).process(expected).css;
@@ -60,6 +67,14 @@ describe('value parsing', function() {
   it('should not replace values in `url()`', function () {
     var rules = '.rule { background: url(16px.jpg); font-size: 16px; }';
     var expected = '.rule { background: url(16px.jpg); font-size: 5vw; }';
+    var processed = postcss(pxToViewport()).process(rules).css;
+
+    expect(processed).toBe(expected);
+  });
+
+  it('should not replace values with an uppercase P or X', function () {
+    var rules = '.rule { margin: 12px calc(100% - 14PX); height: calc(100% - 20px); font-size: 12Px; line-height: 16px; }';
+    var expected = '.rule { margin: 3.75vw calc(100% - 14PX); height: calc(100% - 6.25vw); font-size: 12Px; line-height: 5vw; }';
     var processed = postcss(pxToViewport()).process(rules).css;
 
     expect(processed).toBe(expected);
@@ -204,14 +219,62 @@ describe('minPixelValue', function () {
   });
 });
 
+describe('exclude', function () {
+  var rules = '.rule { border: 1px solid #000; font-size: 16px; margin: 1px 10px; }';
+  var covered = '.rule { border: 1px solid #000; font-size: 5vw; margin: 1px 3.125vw; }'
+  it('when using regex at the time, the style should not be overwritten.', function () {
+    var options = {
+      exclude: /node_modules/
+    }
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/node_modules/main.css'
+    }).css;
+
+    expect(processed).toBe(rules);
+  });
+
+  it('when using regex at the time, the style should be overwritten.', function () {
+    var options = {
+      exclude: /node_modules/
+    }
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/example/main.css'
+    }).css;
+
+    expect(processed).toBe(covered);
+  });
+
+  it('when using array at the time, the style should not be overwritten.', function () {
+    var options = {
+      exclude: [/node_modules/, /exclude/]
+    }
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/exclude/main.css'
+    }).css;
+
+    expect(processed).toBe(rules);
+  });
+
+  it('when using array at the time, the style should be overwritten.', function () {
+    var options = {
+      exclude: [/node_modules/, /exclude/]
+    }
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/example/main.css'
+    }).css;
+
+    expect(processed).toBe(covered);
+  });
+});
+
 describe('replace', function () {
   it('should leave fallback pixel unit with root em value', function () {
-      var options = {
-          replace: false
-      };
-      var processed = postcss(pxToViewport(options)).process(basicCSS).css;
-      var expected = '.rule { font-size: 15px; font-size: 4.6875vw }';
+    var options = {
+      replace: false
+    };
+    var processed = postcss(pxToViewport(options)).process(basicCSS).css;
+    var expected = '.rule { font-size: 15px; font-size: 4.6875vw }';
 
-      expect(processed).toBe(expected);
+    expect(processed).toBe(expected);
   });
 });
