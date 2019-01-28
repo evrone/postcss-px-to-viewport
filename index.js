@@ -28,7 +28,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
   // Not anything inside url()
   // Any digit followed by px
   // !singlequotes|!doublequotes|!url()|pixelunit
-  var pxRegex = new RegExp('"[^"]+"|\'[^\']+\'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)' + opts.unitToConvert, 'ig');
+  var pxRegex = new RegExp('"[^"]+"|\'[^\']+\'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)' + opts.unitToConvert, 'g');
   var satisfyPropList = createPropListMatcher(opts.propList);
 
   return function (css) {
