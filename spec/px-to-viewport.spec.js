@@ -36,6 +36,13 @@ describe('px-to-viewport', function() {
 
     expect(processed).toBe(expected);
   });
+
+  it('should remain unitless if 0', function () {
+    var expected = '.rule { font-size: 0px; font-size: 0; }';
+    var processed = postcss(pxToViewport()).process(expected).css;
+
+    expect(processed).toBe(expected);
+  });
 });
 
 describe('value parsing', function() {
