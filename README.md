@@ -1,6 +1,13 @@
 # postcss-px-to-viewport [![NPM version](https://badge.fury.io/js/postcss-px-to-viewport.svg)](http://badge.fury.io/js/postcss-px-to-viewport)
 
-A plugin for [PostCSS](https://github.com/ai/postcss) that generates viewport units (vw, vh, vmin, vmax) from pixel units.
+A plugin for [PostCSS](https://github.com/postcss/postcss) that generates viewport units (vw, vh, vmin, vmax) from pixel units.
+
+Feel free to start watching and ⭐ project in order not miss the release or updates.
+
+<a href="https://evrone.com/?utm_source=postcss-px-to-viewport">
+  <img src="https://user-images.githubusercontent.com/417688/34437029-dbfe4ee6-ecab-11e7-9d80-2b274b4149b3.png"
+       alt="Sponsored by Evrone" width="231">
+</a>
 
 ## Install
 ```
@@ -125,7 +132,7 @@ Default:
         - `[/^body$/]` will match `body` but not `.body`
 - `minPixelValue` (Number) Set the minimum pixel value to replace.
 - `mediaQuery` (Boolean) Allow px to be converted in media queries.
-- `replace` (Boolean) replaces rules containing rems instead of adding fallbacks.
+- `replace` (Boolean) replaces rules containing vw instead of adding fallbacks.
 - `exclude` (Array or Regexp) Ignore some files like 'node_modules'
     - If value is regexp, will ignore the matches files.
     - If value is array, the elements of the array are regexp.
