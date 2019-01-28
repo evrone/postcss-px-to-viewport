@@ -4,7 +4,7 @@ A plugin for [PostCSS](https://github.com/ai/postcss) that generates viewport un
 
 Feel free to start watching and ⭐ project in order not miss the release or updates.
 
-<a href="https://evrone.com/?utm_source=normas">
+<a href="https://evrone.com/?utm_source=postcss-px-to-viewport">
   <img src="https://user-images.githubusercontent.com/417688/34437029-dbfe4ee6-ecab-11e7-9d80-2b274b4149b3.png"
        alt="Sponsored by Evrone" width="231">
 </a>
