@@ -9,6 +9,7 @@
 var postcss = require('postcss');
 var pxToViewport = require('..');
 var basicCSS = '.rule { font-size: 15px }';
+var { filterPropList } = require('../src/prop-list-matcher');
 
 describe('px-to-viewport', function() {
   it('should work on the readme example', function () {
@@ -205,6 +206,38 @@ describe('mediaQuery', function () {
   });
 });
 
+describe('propList', function () {
+  it('should only replace properties in the prop list', function () {
+      var css = '.rule { font-size: 16px; margin: 16px; margin-left: 5px; padding: 5px; padding-right: 16px }';
+      var expected = '.rule { font-size: 5vw; margin: 5vw; margin-left: 5px; padding: 5px; padding-right: 5vw }';
+      var options = {
+          propList: ['*font*', 'margin*', '!margin-left', '*-right', 'pad']
+      };
+      var processed = postcss(pxToViewport(options)).process(css).css;
+
+      expect(processed).toBe(expected);
+  });
+
+  it('should only replace properties in the prop list with wildcard', function () {
+      var css = '.rule { font-size: 16px; margin: 16px; margin-left: 5px; padding: 5px; padding-right: 16px }';
+      var expected = '.rule { font-size: 16px; margin: 5vw; margin-left: 5px; padding: 5px; padding-right: 16px }';
+      var options = {
+          propList: ['*', '!margin-left', '!*padding*', '!font*']
+      };
+      var processed = postcss(pxToViewport(options)).process(css).css;
+
+      expect(processed).toBe(expected);
+  });
+
+  it('should replace all properties when prop list is not given', function () {
+      var rules = '.rule { margin: 16px; font-size: 15px }';
+      var expected = '.rule { margin: 5vw; font-size: 4.6875vw }';
+      var processed = postcss(pxToViewport()).process(rules).css;
+
+      expect(processed).toBe(expected);
+  });
+});
+
 describe('minPixelValue', function () {
   it('should not replace values below minPixelValue', function () {
       var options = {
@@ -278,3 +311,54 @@ describe('replace', function () {
     expect(processed).toBe(expected);
   });
 });
+
+describe('filter-prop-list', function () {
+  it('should find "exact" matches from propList', function () {
+    var propList = ['font-size', 'margin', '!padding', '*border*', '*', '*y', '!*font*'];
+    var expected = 'font-size,margin';
+    expect(filterPropList.exact(propList).join()).toBe(expected);
+  });
+
+  it('should find "contain" matches from propList and reduce to string', function () {
+    var propList = ['font-size', '*margin*', '!padding', '*border*', '*', '*y', '!*font*'];
+    var expected = 'margin,border';
+    expect(filterPropList.contain(propList).join()).toBe(expected);
+  });
+
+  it('should find "start" matches from propList and reduce to string', function () {
+    var propList = ['font-size', '*margin*', '!padding', 'border*', '*', '*y', '!*font*'];
+    var expected = 'border';
+    expect(filterPropList.startWith(propList).join()).toBe(expected);
+  });
+
+  it('should find "end" matches from propList and reduce to string', function () {
+    var propList = ['font-size', '*margin*', '!padding', 'border*', '*', '*y', '!*font*'];
+    var expected = 'y';
+    expect(filterPropList.endWith(propList).join()).toBe(expected);
+  });
+
+  it('should find "not" matches from propList and reduce to string', function () {
+    var propList = ['font-size', '*margin*', '!padding', 'border*', '*', '*y', '!*font*'];
+    var expected = 'padding';
+    expect(filterPropList.notExact(propList).join()).toBe(expected);
+  });
+
+  it('should find "not contain" matches from propList and reduce to string', function () {
+    var propList = ['font-size', '*margin*', '!padding', '!border*', '*', '*y', '!*font*'];
+    var expected = 'font';
+    expect(filterPropList.notContain(propList).join()).toBe(expected);
+  });
+
+  it('should find "not start" matches from propList and reduce to string', function () {
+    var propList = ['font-size', '*margin*', '!padding', '!border*', '*', '*y', '!*font*'];
+    var expected = 'border';
+    expect(filterPropList.notStartWith(propList).join()).toBe(expected);
+  });
+
+  it('should find "not end" matches from propList and reduce to string', function () {
+    var propList = ['font-size', '*margin*', '!padding', '!border*', '*', '!*y', '!*font*'];
+    var expected = 'y';
+    expect(filterPropList.notEndWith(propList).join()).toBe(expected);
+  });
+});
+

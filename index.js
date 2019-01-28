@@ -2,6 +2,7 @@
 
 var postcss = require('postcss');
 var objectAssign = require('object-assign');
+var { createPropListMatcher } = require('./src/prop-list-matcher');
 
 var defaults = {
   unitToConvert: 'px',
@@ -11,13 +12,14 @@ var defaults = {
   viewportUnit: 'vw',
   fontViewportUnit: 'vw',  // vmin is more suitable.
   selectorBlackList: [],
+  propList: ['*'],
   minPixelValue: 1,
   mediaQuery: false,
   replace: true
 };
 
 module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
-
+  
   var opts = objectAssign({}, defaults, options);
   var pxReplace = createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, opts.viewportUnit);
 
@@ -27,7 +29,8 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
   // Not anything inside url()
   // Any digit followed by px
   // !singlequotes|!doublequotes|!url()|pixelunit
-  var pxRegex = new RegExp('"[^"]+"|\'[^\']+\'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)' + opts.unitToConvert, 'g')
+  var pxRegex = new RegExp('"[^"]+"|\'[^\']+\'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)' + opts.unitToConvert, 'g');
+  var satisfyPropList = createPropListMatcher(opts.propList);
 
   return function (css) {
     
@@ -45,11 +48,12 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
           throw new Error('options.exclude should be RegExp or Array!');
         }
       }
-      
-      // This should be the fastest test and will remove most declarations
-      if (decl.value.indexOf(opts.unitToConvert) === -1) return;
 
-      if (blacklistedSelector(opts.selectorBlackList, decl.parent.selector)) return;
+      if (
+        decl.value.indexOf(opts.unitToConvert) === -1 ||
+        !satisfyPropList(decl.prop) ||
+        blacklistedSelector(opts.selectorBlackList, decl.parent.selector)
+      ) return;
 
       var unit = getUnit(decl.prop, opts);
       var value = decl.value.replace(pxRegex, createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, unit));
