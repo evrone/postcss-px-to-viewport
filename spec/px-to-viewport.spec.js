@@ -43,6 +43,13 @@ describe('px-to-viewport', function() {
 
     expect(processed).toBe(expected);
   });
+
+  it('should not add properties that already exist', function () {
+      var expected = '.rule { font-size: 16px; font-size: 5vw; }';
+      var processed = postcss(pxToViewport()).process(expected).css;
+
+      expect(processed).toBe(expected);
+  });
 });
 
 describe('value parsing', function() {
@@ -257,5 +264,17 @@ describe('exclude', function () {
     }).css;
 
     expect(processed).toBe(covered);
+  });
+});
+
+describe('replace', function () {
+  it('should leave fallback pixel unit with root em value', function () {
+    var options = {
+      replace: false
+    };
+    var processed = postcss(pxToViewport(options)).process(basicCSS).css;
+    var expected = '.rule { font-size: 15px; font-size: 4.6875vw }';
+
+    expect(processed).toBe(expected);
   });
 });
