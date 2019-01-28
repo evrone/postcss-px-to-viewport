@@ -2,6 +2,11 @@
 
 A plugin for [PostCSS](https://github.com/ai/postcss) that generates viewport units (vw, vh, vmin, vmax) from pixel units.
 
+## Install
+```
+$ npm install postcss-px-to-viewport --save-dev
+```
+
 ## Usage
 
 If your project involves a fixed width, this script will help to convert pixels into viewport units.
@@ -117,7 +122,7 @@ Default:
     - If value is array, the elements of the array are regexp.
 
 ### Use with gulp-postcss
-
+add to your gulp config:
 ```js
 var gulp = require('gulp');
 var postcss = require('gulp-postcss');
@@ -136,4 +141,16 @@ gulp.task('css', function () {
         .pipe(postcss(processors))
         .pipe(gulp.dest('build/css'));
 });
+```
+### Use with Postcss configuration file
+add to postcss.config.js
+```js
+module.exports = {
+  plugins: {
+    ...
+    'postcss-px-to-viewport': {
+      // options
+    }
+  }
+}
 ```
