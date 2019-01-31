@@ -3,6 +3,7 @@
 var postcss = require('postcss');
 var objectAssign = require('object-assign');
 var { createPropListMatcher } = require('./src/prop-list-matcher');
+var { getUnitRegexp } = require('./src/pixel-unit-regexp');
 
 var defaults = {
   unitToConvert: 'px',
@@ -21,68 +22,53 @@ var defaults = {
 module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
   
   var opts = objectAssign({}, defaults, options);
-  var pxReplace = createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, opts.viewportUnit);
-
-  // excluding regex trick: http://www.rexegg.com/regex-best-trick.html
-  // Not anything inside double quotes
-  // Not anything inside single quotes
-  // Not anything inside url()
-  // Any digit followed by px
-  // !singlequotes|!doublequotes|!url()|pixelunit
-  var pxRegex = new RegExp('"[^"]+"|\'[^\']+\'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)' + opts.unitToConvert, 'g');
+  var pxRegex = getUnitRegexp(opts.unitToConvert);
   var satisfyPropList = createPropListMatcher(opts.propList);
 
   return function (css) {
-    
-    css.walkDecls(function (decl, i) {
+    css.walkRules(function (rule) {
+      // Add exclude option to ignore some files like 'node_modules'
+      var file = rule.source.input.file;
       
-      // Add exlclude option to ignore some files like 'node_modules' 
-      if (opts.exclude && decl.source.input.file) {
+      if (opts.exclude && file) {
         if (Object.prototype.toString.call(opts.exclude) === '[object RegExp]') {
-          if (!handleExclude(opts.exclude, decl.source.input.file)) return;
+          if (!handleExclude(opts.exclude, file)) return;
         } else if (Object.prototype.toString.call(opts.exclude) === '[object Array]') {
-          for (let i = 0; i < opts.exclude.length; ++i) {
-            if (!handleExclude(opts.exclude[i], decl.source.input.file)) return;
+          for (let i = 0; i < opts.exclude.length; i++) {
+            if (!handleExclude(opts.exclude[i], file)) return;
           }
         } else {
-          throw new Error('options.exclude should be RegExp or Array!');
+          throw new Error('options.exclude should be RegExp or Array.');
         }
       }
+      
+      if (rule.parent.params && !opts.mediaQuery) return;
+      if (blacklistedSelector(opts.selectorBlackList, rule.selector)) return;
+      
+      rule.walkDecls(function(decl, i) {
+        if (decl.value.indexOf(opts.unitToConvert) === -1) return;
+        if (!satisfyPropList(decl.prop)) return;
 
-      if (
-        decl.value.indexOf(opts.unitToConvert) === -1 ||
-        !satisfyPropList(decl.prop) ||
-        blacklistedSelector(opts.selectorBlackList, decl.parent.selector)
-      ) return;
+        var unit = getUnit(decl.prop, opts);
+        var value = decl.value.replace(pxRegex, createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, unit));
 
-      var unit = getUnit(decl.prop, opts);
-      var value = decl.value.replace(pxRegex, createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, unit));
+        if (declarationExists(decl.parent, decl.prop, value)) return;
 
-      if (declarationExists(decl.parent, decl.prop, value)) return;
-
-      if (opts.replace) {
-        decl.value = value;
-      } else {
-        decl.parent.insertAfter(i, decl.clone({ value: value }));
-      }
-    });
-
-    if (opts.mediaQuery) {
-      css.walkAtRules('media', function (rule) {
-        if (rule.params.indexOf(opts.unitToConvert) === -1) return;
-        rule.params = rule.params.replace(pxRegex, pxReplace);
+        if (opts.replace) {
+          decl.value = value;
+        } else {
+          decl.parent.insertAfter(i, decl.clone({ value: value }));
+        }
       });
-    }
-
+    });
   };
 });
 
 function handleExclude (reg, file) {
   if (Object.prototype.toString.call(reg) !== '[object RegExp]') {
-    throw new Error('options.exclude should be RegExp!');
+    throw new Error('options.exclude should be RegExp.');
   }
-  if (file.match(reg) !== null) return false;
-  return true;
+  return file.match(reg) === null;
 } 
 
 function getUnit(prop, opts) {
@@ -114,7 +100,7 @@ function blacklistedSelector(blacklist, selector) {
 }
 
 function declarationExists(decls, prop, value) {
-    return decls.some(function (decl) {
-        return (decl.prop === prop && decl.value === value);
-    });
+  return decls.some(function (decl) {
+      return (decl.prop === prop && decl.value === value);
+  });
 }
