@@ -221,6 +221,16 @@ describe('mediaQuery', function () {
 
     expect(processed).toBe(expected);
   });
+  
+  it('should not replace px inside media queries if it has params orientation landscape', function() {
+    var options = {
+      mediaQuery: true
+    };
+    var processed = postcss(pxToViewport(options)).process('@media (orientation-landscape) and (min-width: 500px) { .rule { font-size: 16px } }').css;
+    var expected = '@media (orientation-landscape) and (min-width: 500px) { .rule { font-size: 16px } }';
+
+    expect(processed).toBe(expected);
+  });
 });
 
 describe('propList', function () {
@@ -379,3 +389,50 @@ describe('filter-prop-list', function () {
   });
 });
 
+describe('landscape', function() {
+  it('should add landscape atRule', function() {
+    var css = '.rule { font-size: 16px; margin: 16px; margin-left: 5px; padding: 5px; padding-right: 16px }';
+    var expected = '.rule { font-size: 5vw; margin: 5vw; margin-left: 1.5625vw; padding: 1.5625vw; padding-right: 5vw }@media (orientation: landscape) {.rule { font-size: 5vh; margin: 5vh; margin-left: 1.5625vh; padding: 1.5625vh; padding-right: 5vh } }';
+    var options = {
+      landscape: true
+    };
+    var processed = postcss(pxToViewport(options)).process(css).css;
+
+    expect(processed).toBe(expected);
+  });
+
+  it('should add landscape atRule with specified landscapeUnits', function() {
+    var css = '.rule { font-size: 16px; margin: 16px; margin-left: 5px; padding: 5px; padding-right: 16px }';
+    var expected = '.rule { font-size: 5vw; margin: 5vw; margin-left: 1.5625vw; padding: 1.5625vw; padding-right: 5vw }@media (orientation: landscape) {.rule { font-size: 5vw; margin: 5vw; margin-left: 1.5625vw; padding: 1.5625vw; padding-right: 5vw } }';
+    var options = {
+      landscape: true,
+      landscapeUnit: 'vw'
+    };
+    var processed = postcss(pxToViewport(options)).process(css).css;
+
+    expect(processed).toBe(expected);
+  });
+  
+  it('should not add landscape atRule in mediaQueries', function() {
+    var css = '@media (min-width: 500px) { .rule { font-size: 16px } }';
+    var expected = '@media (min-width: 500px) { .rule { font-size: 5vw } }';
+    var options = {
+      landscape: true,
+      mediaQuery: true
+    };
+    var processed = postcss(pxToViewport(options)).process(css).css;
+
+    expect(processed).toBe(expected);
+  });
+  
+  it('should not replace values inside landscape atRule', function() {
+    var options = {
+      replace: false,
+      landscape: true
+    };
+    var processed = postcss(pxToViewport(options)).process(basicCSS).css;
+    var expected = '.rule { font-size: 15px; font-size: 4.6875vw }@media (orientation: landscape) {.rule { font-size: 4.6875vh } }';
+
+    expect(processed).toBe(expected);
+  })
+});
