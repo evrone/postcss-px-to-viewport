@@ -1,28 +1,20 @@
-# postcss-px-to-viewport [![NPM version](https://badge.fury.io/js/postcss-px-to-viewport.svg)](http://badge.fury.io/js/postcss-px-to-viewport)
+# postcss-px-to-viewport
+[![NPM version](https://badge.fury.io/js/postcss-px-to-viewport.svg)](http://badge.fury.io/js/postcss-px-to-viewport)
 
 A plugin for [PostCSS](https://github.com/postcss/postcss) that generates viewport units (vw, vh, vmin, vmax) from pixel units.
-
-Feel free to start watching and ⭐ project in order not miss the release or updates.
 
 <a href="https://evrone.com/?utm_source=postcss-px-to-viewport">
   <img src="https://user-images.githubusercontent.com/417688/34437029-dbfe4ee6-ecab-11e7-9d80-2b274b4149b3.png"
        alt="Sponsored by Evrone" width="231">
 </a>
 
-## Install
-```
-$ npm install postcss-px-to-viewport --save-dev
-```
-
-## Usage
+## Demo
 
 If your project involves a fixed width, this script will help to convert pixels into viewport units.
 
-### Input/Output
+### Input
 
 ```css
-// input
-
 .class {
   margin: -10px .5vh;
   padding: 5vmin 9.5px 1px;
@@ -45,9 +37,10 @@ If your project involves a fixed width, this script will help to convert pixels 
     line-height: 22px;
   }
 }
+```
 
-// output
-
+### Output
+```css
 .class {
   margin: -3.125vw .5vh;
   padding: 5vmin 2.96875vw 1px;
@@ -64,58 +57,49 @@ If your project involves a fixed width, this script will help to convert pixels 
   line-height: 9.375vw;
 }
 
-@media (min-width: 234.375vw) {
+@media (min-width: 750px) {
   .class3 {
-    font-size: 5vw;
-    line-height: 6.875vw;
+    font-size: 16px;
+    line-height: 22px;
   }
 }
 ```
 
-### Example
+## Getting Started
 
-```js
-'use strict';
-
-var fs = require('fs');
-var postcss = require('postcss');
-var pxToViewport = require('..');
-var css = fs.readFileSync('main.css', 'utf8');
-var options = {
-    replace: false
-};
-var processedCss = postcss(pxToViewport(options)).process(css).css;
-
-fs.writeFile('main-viewport.css', processedCss, function (err) {
-  if (err) {
-    throw err;
-  }
-  console.log('File with viewport units written.');
-});
+### Installation
+Add via npm
+```
+$ npm install postcss-px-to-viewport --save-dev
+```
+or yarn
+```
+$ yarn add postcss-px-to-viewport
 ```
 
-### Options
+### Usage
 
-Default:
+Default Options:
 ```js
 {
   unitToConvert: 'px',
   viewportWidth: 320,
-  viewportHeight: 568, // not now used; TODO: need for different units and math for different properties
   unitPrecision: 5,
   propList: ['*'],
   viewportUnit: 'vw',
-  fontViewportUnit: 'vw',  // vmin is more suitable.
+  fontViewportUnit: 'vw',
   selectorBlackList: [],
   minPixelValue: 1,
   mediaQuery: false,
   replace: true,
-  exclude: [] // ignore some files
+  exclude: [],
+  landscape: false,
+  landscapeUnit: 'vw',
+  landscapeWidth: 568
 }
 ```
 - `unitToConvert` (String) unit to convert, by default, it is px.
 - `viewportWidth` (Number) The width of the viewport.
-- `viewportHeight` (Number) The height of the viewport.
 - `unitPrecision` (Number) The decimal numbers to allow the vw units to grow to.
 - `propList` (Array) The properties that can change from px to vw.
   - Values need to be exact matches.
@@ -136,9 +120,13 @@ Default:
 - `exclude` (Array or Regexp) Ignore some files like 'node_modules'
     - If value is regexp, will ignore the matches files.
     - If value is array, the elements of the array are regexp.
+- `landscape` (Boolean) Adds `@media (orientation: landscape)` with values converted via `landscapeWidth`.
+- `landscapeUnit` (String) Expected unit for `landscape` option
+- `landscapeWidth` (Number) Viewport width for landscape orientation.
 
-### Use with gulp-postcss
-add to your gulp config:
+#### Use with gulp-postcss
+
+add to your `gulpfile.js`:
 ```js
 var gulp = require('gulp');
 var postcss = require('gulp-postcss');
@@ -158,8 +146,10 @@ gulp.task('css', function () {
         .pipe(gulp.dest('build/css'));
 });
 ```
-### Use with Postcss configuration file
-add to postcss.config.js
+
+#### Use with PostCss configuration file
+
+add to your `postcss.config.js`
 ```js
 module.exports = {
   plugins: {
@@ -170,3 +160,40 @@ module.exports = {
   }
 }
 ```
+
+## Running the tests
+
+In order to run tests, you need to install `jasmine-node` globally:
+```
+$ npm install jasmine-node -g
+```
+Then run the tests via npm script:
+```
+$ npm run test
+```
+
+## Contributing
+
+Please read [Code of Conduct](CODE-OF-CONDUCT.md) and [Contributing Guidelines](CONTRIBUTING.md) for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/evrone/postcss-px-to-viewport/tags). 
+
+## Changelog
+
+The changelog is [here](CHANGELOG.md).
+
+## Authors
+
+* [Dmitry Karpunin](https://github.com/KODerFunk) - *Initial work*
+
+See also the list of [contributors](https://github.com/evrone/postcss-px-to-viewport/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Acknowledgments
+
+* Hat tip to https://github.com/cuth/postcss-pxtorem/ for inspiring us for this project.
