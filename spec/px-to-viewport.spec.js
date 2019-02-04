@@ -222,12 +222,13 @@ describe('mediaQuery', function () {
     expect(processed).toBe(expected);
   });
   
-  it('should not replace px inside media queries if it has params orientation landscape', function() {
+  it('should replace px inside media queries if it has params orientation landscape and landscape option', function() {
     var options = {
-      mediaQuery: true
+      mediaQuery: true,
+      landscape: true
     };
     var processed = postcss(pxToViewport(options)).process('@media (orientation-landscape) and (min-width: 500px) { .rule { font-size: 16px } }').css;
-    var expected = '@media (orientation-landscape) and (min-width: 500px) { .rule { font-size: 16px } }';
+    var expected = '@media (orientation-landscape) and (min-width: 500px) { .rule { font-size: 2.8169vw } }';
 
     expect(processed).toBe(expected);
   });
@@ -392,7 +393,7 @@ describe('filter-prop-list', function () {
 describe('landscape', function() {
   it('should add landscape atRule', function() {
     var css = '.rule { font-size: 16px; margin: 16px; margin-left: 5px; padding: 5px; padding-right: 16px }';
-    var expected = '.rule { font-size: 5vw; margin: 5vw; margin-left: 1.5625vw; padding: 1.5625vw; padding-right: 5vw }@media (orientation: landscape) {.rule { font-size: 5vh; margin: 5vh; margin-left: 1.5625vh; padding: 1.5625vh; padding-right: 5vh } }';
+    var expected = '.rule { font-size: 5vw; margin: 5vw; margin-left: 1.5625vw; padding: 1.5625vw; padding-right: 5vw }@media (orientation: landscape) {.rule { font-size: 2.8169vw; margin: 2.8169vw; margin-left: 0.88028vw; padding: 0.88028vw; padding-right: 2.8169vw } }';
     var options = {
       landscape: true
     };
@@ -403,10 +404,10 @@ describe('landscape', function() {
 
   it('should add landscape atRule with specified landscapeUnits', function() {
     var css = '.rule { font-size: 16px; margin: 16px; margin-left: 5px; padding: 5px; padding-right: 16px }';
-    var expected = '.rule { font-size: 5vw; margin: 5vw; margin-left: 1.5625vw; padding: 1.5625vw; padding-right: 5vw }@media (orientation: landscape) {.rule { font-size: 5vw; margin: 5vw; margin-left: 1.5625vw; padding: 1.5625vw; padding-right: 5vw } }';
+    var expected = '.rule { font-size: 5vw; margin: 5vw; margin-left: 1.5625vw; padding: 1.5625vw; padding-right: 5vw }@media (orientation: landscape) {.rule { font-size: 2.8169vh; margin: 2.8169vh; margin-left: 0.88028vh; padding: 0.88028vh; padding-right: 2.8169vh } }';
     var options = {
       landscape: true,
-      landscapeUnit: 'vw'
+      landscapeUnit: 'vh'
     };
     var processed = postcss(pxToViewport(options)).process(css).css;
 
@@ -425,13 +426,35 @@ describe('landscape', function() {
     expect(processed).toBe(expected);
   });
   
-  it('should not replace values inside landscape atRule', function() {
+  it('should replace values inside landscape atRule', function() {
     var options = {
       replace: false,
       landscape: true
     };
     var processed = postcss(pxToViewport(options)).process(basicCSS).css;
-    var expected = '.rule { font-size: 15px; font-size: 4.6875vw }@media (orientation: landscape) {.rule { font-size: 4.6875vh } }';
+    var expected = '.rule { font-size: 15px; font-size: 4.6875vw }@media (orientation: landscape) {.rule { font-size: 15px; font-size: 2.64085vw } }';
+
+    expect(processed).toBe(expected);
+  });
+  
+  it('should add landscape atRule with specified landscapeWidth', function() {
+    var options = {
+      landscape: true,
+      landscapeWidth: 768
+    };
+    var processed = postcss(pxToViewport(options)).process(basicCSS).css;
+    var expected = '.rule { font-size: 4.6875vw }@media (orientation: landscape) {.rule { font-size: 1.95313vw } }';
+
+    expect(processed).toBe(expected);
+  });
+  
+  it('should not add landscape atRule if it has no nodes', function() {
+    var css = '.rule { font-size: 15vw }';
+    var options = {
+      landscape: true
+    };
+    var processed = postcss(pxToViewport(options)).process(css).css;
+    var expected = '.rule { font-size: 15vw }';
 
     expect(processed).toBe(expected);
   })
