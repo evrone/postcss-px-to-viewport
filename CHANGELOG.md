@@ -23,4 +23,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - zero values now remain unitless.
-- replace regexp is not case sensitive, so if you want to change `px`, then `pX` values won't be changed.
+- replace regexp is now case sensitive, so if you want to change `px`, then `pX` values won't be changed.
