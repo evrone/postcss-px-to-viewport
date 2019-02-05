@@ -426,13 +426,13 @@ describe('landscape', function() {
     expect(processed).toBe(expected);
   });
   
-  it('should replace values inside landscape atRule', function() {
+  it('should not replace values inside landscape atRule', function() {
     var options = {
       replace: false,
       landscape: true
     };
     var processed = postcss(pxToViewport(options)).process(basicCSS).css;
-    var expected = '.rule { font-size: 15px; font-size: 4.6875vw }@media (orientation: landscape) {.rule { font-size: 15px; font-size: 2.64085vw } }';
+    var expected = '.rule { font-size: 15px; font-size: 4.6875vw }@media (orientation: landscape) {.rule { font-size: 2.64085vw } }';
 
     expect(processed).toBe(expected);
   });

@@ -56,15 +56,9 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
           if (decl.value.indexOf(opts.unitToConvert) === -1) return;
           if (!satisfyPropList(decl.prop)) return;
           
-          var landscapeDecl = decl.clone({
+          landscapeRule.append(decl.clone({
             value: decl.value.replace(pxRegex, createPxReplace(opts, opts.landscapeUnit, opts.landscapeWidth))
-          });
-          
-          if (opts.replace) {
-            landscapeRule.append(landscapeDecl);
-          } else {
-            landscapeRule.append([decl.clone(), landscapeDecl]);
-          }
+          }));
         });
         
         if (landscapeRule.nodes.length > 0) {
