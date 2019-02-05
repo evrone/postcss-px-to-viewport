@@ -3,3 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0] - 2019-01-28
+
+### Added
+- `replace` option - (Boolean) replaces rules containing `vw` instead of adding fallbacks.
+- `propList` option - (Array) The properties that can change from `px` to `vw`.
+- `exclude` option - (Array or Regexp) Ignore some files like `node_modules`.
+
+### Changed
+- zero values now remain unitless.
+- replace regexp is not case sensitive, so if you want to change `px`, then `pX` values won't be changed.
