@@ -187,6 +187,7 @@ The changelog is [here](CHANGELOG.md).
 ## Authors
 
 * [Dmitry Karpunin](https://github.com/KODerFunk) - *Initial work*
+* [Ivan Bunin](https://github.com/chernobelenkiy)
 
 See also the list of [contributors](https://github.com/evrone/postcss-px-to-viewport/contributors) who participated in this project.
 
