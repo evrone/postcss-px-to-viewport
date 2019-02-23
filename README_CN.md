@@ -1,7 +1,7 @@
 # postcss-px-to-viewport
 [![NPM version](https://badge.fury.io/js/postcss-px-to-viewport.svg)](http://badge.fury.io/js/postcss-px-to-viewport)
 
-A plugin for [PostCSS](https://github.com/postcss/postcss) that generates viewport units (vw, vh, vmin, vmax) from pixel units.
+将px单位转换为视口单位的 (vw, vh, vmin, vmax) 的 [PostCSS](https://github.com/postcss/postcss) 插件.
 
 <a href="https://evrone.com/?utm_source=postcss-px-to-viewport">
   <img src="https://user-images.githubusercontent.com/417688/34437029-dbfe4ee6-ecab-11e7-9d80-2b274b4149b3.png"
@@ -98,17 +98,17 @@ $ yarn add postcss-px-to-viewport
   landscapeWidth: 568
 }
 ```
-- `unitToConvert` (String) 需要转换的单位，默认为"px"。
-- `viewportWidth` (Number) 设计稿的视口宽度。
-- `unitPrecision` (Number) 单位转换后保留的精度。
+- `unitToConvert` (String) 需要转换的单位，默认为"px"
+- `viewportWidth` (Number) 设计稿的视口宽度
+- `unitPrecision` (Number) 单位转换后保留的精度
 - `propList` (Array) 能转化为vw的属性列表
   - 传入特定的CSS属性；
   - 可以传入通配符"*"去匹配所有属性，例如：['*']；
   - 在属性的前或后添加"*",可以匹配特定的属性. (例如['*position*'] 会匹配 background-position-y)
   - 在特定属性前加 "!"，将不转换该属性的单位 . 例如: ['*', '!letter-spacing']，将不转换letter-spacing
   - "!" 和 "*"可以组合使用， 例如: ['*', '!font*']，将不转换font-size以及font-weight等属性
-- `viewportUnit` (String) 希望使用的视口单位。
-- `fontViewportUnit` (String) 字体使用的视口单位。
+- `viewportUnit` (String) 希望使用的视口单位
+- `fontViewportUnit` (String) 字体使用的视口单位
 - `selectorBlackList` (Array) 需要忽略的CSS选择器，不会转为视口单位，使用原有的px等单位。
     - 如果传入的值为字符串的话，只要选择器中含有传入值就会被匹配
         - 例如 `selectorBlackList` 为 `['body']` 的话， 那么 `.body-class` 就会被忽略
@@ -178,7 +178,7 @@ $ npm run test
 
 ## 版本跟踪
 
-使用 [SemVer](http://semver.org/) 做版本跟踪。 查看这个仓库的[tag标签](https://github.com/evrone/postcss-px-to-viewport/tags).
+使用 [SemVer](http://semver.org/) 做版本跟踪， 可用版本可在[这](https://github.com/evrone/postcss-px-to-viewport/tags)看到
 
 ## Changelog
 
@@ -197,4 +197,4 @@ $ npm run test
 
 ## 借鉴自
 
-* 受 https://github.com/cuth/postcss-pxtorem/ 启发有了这个项目.
+* 受 https://github.com/cuth/postcss-pxtorem/ 启发有了这个项目
