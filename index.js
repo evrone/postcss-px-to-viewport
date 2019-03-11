@@ -83,7 +83,15 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
           unit = getUnit(decl.prop, opts);
           size = opts.viewportWidth;
         }
-        
+
+        let nodes = decl.parent.nodes;
+        let indexes = decl.parent.indexes['1'];
+        let next = nodes[indexes + 1];
+        // next declaration is comment and comment text is no or px
+        if (next && next.type === 'comment' && (next.text === 'no' || next.text === 'px')) {
+          return;
+        }
+
         var value = decl.value.replace(pxRegex, createPxReplace(opts, unit, size));
         
         if (declarationExists(decl.parent, decl.prop, value)) return;

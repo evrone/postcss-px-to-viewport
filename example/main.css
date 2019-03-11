@@ -1,10 +1,10 @@
 .class {
   margin: -10px .5vh;
   padding: 5vmin 9.5px 1px;
-  border: 3px solid black;
+  border: 3px solid black; /*px*/
   border-bottom-width: 1px;
   font-size: 14px;
-  line-height: 20px;
+  line-height: 20px; /* no */
 }
 .class2 {
   border: 1px solid black;
@@ -16,6 +16,31 @@
   .class3 {
     font-size: 16px;
     line-height: 22px;
+  }
+}
+
+.class4::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border: solid 2px #000; /*no*/
+}
+.ignore {
+  width: 10px;
+}
+.ignore::after {
+  top: 10px;
+}
+
+@keyframes move {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(10px, -10px);
+  }
+  100% {
+    transform: translate(10px, -10px); /*no */
   }
 }
 
