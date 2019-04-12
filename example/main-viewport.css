@@ -1,10 +1,10 @@
 .class {
   margin: -3.125vw .5vh;
   padding: 5vmin 2.96875vw 1px;
-  border: 3px solid black; /*px*/
+  border: 3px solid black;
   border-bottom-width: 1px;
   font-size: 4.375vw;
-  line-height: 20px; /* no */
+  line-height: 20px;
 }
 .class2 {
   border: 1px solid black;
@@ -23,7 +23,7 @@
   content: '';
   width: 3.125vw;
   height: 3.125vw;
-  border: solid 2px #000; /*no*/
+  border: solid 2px #000;
 }
 .ignore {
   width: 3.125vw;

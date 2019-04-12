@@ -457,5 +457,23 @@ describe('landscape', function() {
     var expected = '.rule { font-size: 15vw }';
 
     expect(processed).toBe(expected);
+  });
+
+  it('should ignore comments with no', function() {
+    var css = '.rule { font-size: 15px; height: 100px; /*no*/ }';
+    var expected = '.rule { font-size: 4.6875vw; height: 100px; }';
+
+    var processed = postcss(pxToViewport()).process(css).css;
+
+    expect(processed).toBe(expected);
+  });
+
+  it('should ignore comments with px', function() {
+    var css = '.rule { font-size: 15px; height: 100px; /*px*/ }';
+    var expected = '.rule { font-size: 4.6875vw; height: 100px; }';
+
+    var processed = postcss(pxToViewport()).process(css).css;
+
+    expect(processed).toBe(expected);
   })
 });
