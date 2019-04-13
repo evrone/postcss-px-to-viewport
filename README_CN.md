@@ -76,7 +76,7 @@ $ npm install postcss-px-to-viewport --save-dev
 ```
 或者使用yarn进行安装
 ```
-$ yarn add postcss-px-to-viewport
+$ yarn add -D postcss-px-to-viewport
 ```
 
 ### 配置参数
