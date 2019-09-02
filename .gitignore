@@ -5,3 +5,5 @@ npm-debug.log*
 node_modules
 .idea
 postcss-px-to-em-master
+.vscode
+.history

@@ -117,7 +117,7 @@ Default Options:
     - If value is regexp, it checks to see if the selector matches the regexp.
         - `[/^body$/]` will match `body` but not `.body`
 - `minPixelValue` (Number) Set the minimum pixel value to replace.
-- `mediaQuery` (Boolean) Allow px to be converted in media queries.
+- `mediaQuery` (Boolean or Regexp or Array) Allow px to be converted in media queries.
 - `replace` (Boolean) replaces rules containing vw instead of adding fallbacks.
 - `exclude` (Array or Regexp) Ignore some files like 'node_modules'
     - If value is regexp, will ignore the matches files.
