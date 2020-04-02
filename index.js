@@ -39,7 +39,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
         if (Object.prototype.toString.call(opts.include) === '[object RegExp]') {
           if (!isInclude(opts.include, file)) return;
         } else if (Object.prototype.toString.call(opts.include) === '[object Array]') {
-          var flag = false
+          var flag = false;
           for (let i = 0; i < opts.include.length; i++) {
             if (isInclude(opts.include[i], file)) flag = true;
           }
