@@ -94,7 +94,8 @@ Default Options:
   minPixelValue: 1,
   mediaQuery: false,
   replace: true,
-  exclude: [],
+  exclude: undefined,
+  include: undefined,
   landscape: false,
   landscapeUnit: 'vw',
   landscapeWidth: 568
@@ -122,9 +123,14 @@ Default Options:
 - `exclude` (Array or Regexp) Ignore some files like 'node_modules'
     - If value is regexp, will ignore the matches files.
     - If value is array, the elements of the array are regexp.
+- `include` (Array or Regexp) If `include` is set, only matching files will be converted, for example, only files under 'src/mobile'
+    - If the value is regexp, the matching file will be included, otherwise it will be excluded.
+    - If value is array, the elements of the array are regexp.
 - `landscape` (Boolean) Adds `@media (orientation: landscape)` with values converted via `landscapeWidth`.
 - `landscapeUnit` (String) Expected unit for `landscape` option
 - `landscapeWidth` (Number) Viewport width for landscape orientation.
+
+> `exclude` and` include` can be set together, and the intersection of the two rules will be taken.
 
 #### Use with gulp-postcss
 
