@@ -35,6 +35,20 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
       // Add exclude option to ignore some files like 'node_modules'
       var file = rule.source && rule.source.input.file;
 
+      if (opts.include && file) {
+        if (Object.prototype.toString.call(opts.include) === '[object RegExp]') {
+          if (!isInclude(opts.include, file)) return;
+        } else if (Object.prototype.toString.call(opts.include) === '[object Array]') {
+          var flag = false
+          for (let i = 0; i < opts.include.length; i++) {
+            if (isInclude(opts.include[i], file)) flag = true;
+          }
+          if (!flag) return;
+        } else {
+          throw new Error('options.include should be RegExp or Array.');
+        }
+      }
+
       if (opts.exclude && file) {
         if (Object.prototype.toString.call(opts.exclude) === '[object RegExp]') {
           if (isExclude(opts.exclude, file)) return;
@@ -138,6 +152,13 @@ function blacklistedSelector(blacklist, selector) {
 function isExclude(reg, file) {
   if (Object.prototype.toString.call(reg) !== '[object RegExp]') {
     throw new Error('options.exclude should be RegExp.');
+  }
+  return file.match(reg) !== null;
+}
+
+function isInclude(reg, file) {
+  if (Object.prototype.toString.call(reg) !== '[object RegExp]') {
+    throw new Error('options.include should be RegExp.');
   }
   return file.match(reg) !== null;
 }
