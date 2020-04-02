@@ -94,7 +94,8 @@ $ yarn add -D postcss-px-to-viewport
   minPixelValue: 1,
   mediaQuery: false,
   replace: true,
-  exclude: [],
+  exclude: undefined,
+  include: undefined,
   landscape: false,
   landscapeUnit: 'vw',
   landscapeWidth: 568
@@ -122,9 +123,14 @@ $ yarn add -D postcss-px-to-viewport
 - `exclude` (Array or Regexp) 忽略某些文件夹下的文件或特定文件，例如 'node_modules' 下的文件
     - 如果值是一个正则表达式，那么匹配这个正则的文件会被忽略
     - 如果传入的值是一个数组，那么数组里的值必须为正则
+- `include` (Array or Regexp) 如果设置了`include`，那将只有匹配到的文件才会被转换，例如只转换 'src/mobile' 下的文件
+    - 如果值是一个正则表达式，将包含匹配的文件，否则将排除该文件
+    - 如果传入的值是一个数组，那么数组里的值必须为正则
 - `landscape` (Boolean) 是否添加根据 `landscapeWidth` 生成的媒体查询条件 `@media (orientation: landscape)`
 - `landscapeUnit` (String) 横屏时使用的单位
 - `landscapeWidth` (Number) 横屏时使用的视口宽度
+
+> `exclude`和`include`是可以一起设置的，将取两者规则的交集。
 
 #### 直接在gulp中使用，添加gulp-postcss
 
