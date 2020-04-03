@@ -328,6 +328,54 @@ describe('exclude', function () {
   });
 });
 
+describe('include', function () {
+  var rules = '.rule { border: 1px solid #000; font-size: 16px; margin: 1px 10px; }';
+  var covered = '.rule { border: 1px solid #000; font-size: 5vw; margin: 1px 3.125vw; }';
+  it('when using regex at the time, the style should not be overwritten.', function () {
+    var options = {
+      include: /mobile/
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/pc/main.css'
+    }).css;
+
+    expect(processed).toBe(rules);
+  });
+
+  it('when using regex at the time, the style should be overwritten.', function () {
+    var options = {
+      include: /mobile/
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/mobile/main.css'
+    }).css;
+
+    expect(processed).toBe(covered);
+  });
+
+  it('when using array at the time, the style should not be overwritten.', function () {
+    var options = {
+      include: [/flexible/, /mobile/]
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/pc/main.css'
+    }).css;
+
+    expect(processed).toBe(rules);
+  });
+
+  it('when using array at the time, the style should be overwritten.', function () {
+    var options = {
+      include: [/flexible/, /mobile/]
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/flexible/main.css'
+    }).css;
+
+    expect(processed).toBe(covered);
+  });
+});
+
 describe('replace', function () {
   it('should leave fallback pixel unit with root em value', function () {
     var options = {
