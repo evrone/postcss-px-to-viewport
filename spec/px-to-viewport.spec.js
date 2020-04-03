@@ -285,7 +285,7 @@ describe('exclude', function () {
   var covered = '.rule { border: 1px solid #000; font-size: 5vw; margin: 1px 3.125vw; }';
   it('when using regex at the time, the style should not be overwritten.', function () {
     var options = {
-      exclude: /node_modules/
+      exclude: /\/node_modules\//
     };
     var processed = postcss(pxToViewport(options)).process(rules, {
       from: '/node_modules/main.css'
@@ -296,7 +296,7 @@ describe('exclude', function () {
 
   it('when using regex at the time, the style should be overwritten.', function () {
     var options = {
-      exclude: /node_modules/
+      exclude: /\/node_modules\//
     };
     var processed = postcss(pxToViewport(options)).process(rules, {
       from: '/example/main.css'
@@ -307,7 +307,7 @@ describe('exclude', function () {
 
   it('when using array at the time, the style should not be overwritten.', function () {
     var options = {
-      exclude: [/node_modules/, /exclude/]
+      exclude: [/\/node_modules\//, /\/exclude\//]
     };
     var processed = postcss(pxToViewport(options)).process(rules, {
       from: '/exclude/main.css'
@@ -318,7 +318,7 @@ describe('exclude', function () {
 
   it('when using array at the time, the style should be overwritten.', function () {
     var options = {
-      exclude: [/node_modules/, /exclude/]
+      exclude: [/\/node_modules\//, /\/exclude\//]
     };
     var processed = postcss(pxToViewport(options)).process(rules, {
       from: '/example/main.css'
@@ -333,7 +333,7 @@ describe('include', function () {
   var covered = '.rule { border: 1px solid #000; font-size: 5vw; margin: 1px 3.125vw; }';
   it('when using regex at the time, the style should not be overwritten.', function () {
     var options = {
-      include: /mobile/
+      include: /\/mobile\//
     };
     var processed = postcss(pxToViewport(options)).process(rules, {
       from: '/pc/main.css'
@@ -344,7 +344,7 @@ describe('include', function () {
 
   it('when using regex at the time, the style should be overwritten.', function () {
     var options = {
-      include: /mobile/
+      include: /\/mobile\//
     };
     var processed = postcss(pxToViewport(options)).process(rules, {
       from: '/mobile/main.css'
@@ -355,7 +355,7 @@ describe('include', function () {
 
   it('when using array at the time, the style should not be overwritten.', function () {
     var options = {
-      include: [/flexible/, /mobile/]
+      include: [/\/flexible\//, /\/mobile\//]
     };
     var processed = postcss(pxToViewport(options)).process(rules, {
       from: '/pc/main.css'
@@ -366,10 +366,112 @@ describe('include', function () {
 
   it('when using array at the time, the style should be overwritten.', function () {
     var options = {
-      include: [/flexible/, /mobile/]
+      include: [/\/flexible\//, /\/mobile\//]
     };
     var processed = postcss(pxToViewport(options)).process(rules, {
       from: '/flexible/main.css'
+    }).css;
+
+    expect(processed).toBe(covered);
+  });
+});
+
+describe('include-and-exclude', function () {
+  var rules = '.rule { border: 1px solid #000; font-size: 16px; margin: 1px 10px; }';
+  var covered = '.rule { border: 1px solid #000; font-size: 5vw; margin: 1px 3.125vw; }';
+
+  it('when using regex at the time, the style should not be overwritten.', function () {
+    var options = {
+      include: /\/mobile\//,
+      exclude: /\/not-transform\//
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/mobile/not-transform/main.css'
+    }).css;
+
+    expect(processed).toBe(rules);
+  });
+
+  it('when using regex at the time, the style should be overwritten.', function () {
+    var options = {
+      include: /\/mobile\//,
+      exclude: /\/not-transform\//
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/mobile/style/main.css'
+    }).css;
+
+    expect(processed).toBe(covered);
+  });
+
+  it('when using array at the time, the style should not be overwritten.', function () {
+    var options = {
+      include: [/\/flexible\//, /\/mobile\//],
+      exclude: [/\/not-transform\//, /pc/]
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/flexible/not-transform/main.css'
+    }).css;
+
+    expect(processed).toBe(rules);
+  });
+
+  it('when using regex at the time, the style should be overwritten.', function () {
+    var options = {
+      include: [/\/flexible\//, /\/mobile\//],
+      exclude: [/\/not-transform\//, /pc/]
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/mobile/style/main.css'
+    }).css;
+
+    expect(processed).toBe(covered);
+  });
+});
+
+describe('regex', function () {
+  var rules = '.rule { border: 1px solid #000; font-size: 16px; margin: 1px 10px; }';
+  var covered = '.rule { border: 1px solid #000; font-size: 5vw; margin: 1px 3.125vw; }';
+
+  it('when using regex at the time, the style should not be overwritten.', function () {
+    var options = {
+      exclude: /pc/
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/pc-project/main.css'
+    }).css;
+
+    expect(processed).toBe(rules);
+  });
+
+  it('when using regex at the time, the style should be overwritten.', function () {
+    var options = {
+      exclude: /\/pc\//
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/pc-project/main.css'
+    }).css;
+
+    expect(processed).toBe(covered);
+  });
+
+  it('when using regex at the time, the style should not be overwritten.', function () {
+    var options = {
+      include: /\/pc\//
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/pc-project/main.css'
+    }).css;
+
+    expect(processed).toBe(rules);
+  });
+
+  it('when using regex at the time, the style should be overwritten.', function () {
+    var options = {
+      include: /pc/
+    };
+    var processed = postcss(pxToViewport(options)).process(rules, {
+      from: '/pc-project/main.css'
     }).css;
 
     expect(processed).toBe(covered);
