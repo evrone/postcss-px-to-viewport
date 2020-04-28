@@ -22,45 +22,49 @@ var defaults = {
   landscapeWidth: 568
 };
 
+var ignoreNextComment = 'px-to-viewport-ignore-next';
+var ignorePrevComment = 'px-to-viewport-ignore';
+
 module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
-  
   var opts = objectAssign({}, defaults, options);
+
+  checkRegExpOrArray(opts, 'exclude');
+  checkRegExpOrArray(opts, 'include');
 
   var pxRegex = getUnitRegexp(opts.unitToConvert);
   var satisfyPropList = createPropListMatcher(opts.propList);
   var landscapeRules = [];
-  
-  return function (css) {
+
+  return function (css, result) {
     css.walkRules(function (rule) {
       // Add exclude option to ignore some files like 'node_modules'
       var file = rule.source && rule.source.input.file;
 
       if (opts.include && file) {
         if (Object.prototype.toString.call(opts.include) === '[object RegExp]') {
-          if (!isInclude(opts.include, file)) return;
+          if (!opts.include.test(file)) return;
         } else if (Object.prototype.toString.call(opts.include) === '[object Array]') {
           var flag = false;
-          for (let i = 0; i < opts.include.length; i++) {
-            if (isInclude(opts.include[i], file)) flag = true;
+          for (var i = 0; i < opts.include.length; i++) {
+            if (opts.include[i].test(file)) {
+              flag = true;
+              break;
+            }
           }
           if (!flag) return;
-        } else {
-          throw new Error('options.include should be RegExp or Array.');
         }
       }
 
       if (opts.exclude && file) {
         if (Object.prototype.toString.call(opts.exclude) === '[object RegExp]') {
-          if (isExclude(opts.exclude, file)) return;
+          if (opts.exclude.test(file)) return;
         } else if (Object.prototype.toString.call(opts.exclude) === '[object Array]') {
-          for (let i = 0; i < opts.exclude.length; i++) {
-            if (isExclude(opts.exclude[i], file)) return;
+          for (var i = 0; i < opts.exclude.length; i++) {
+            if (opts.exclude[i].test(file)) return;
           }
-        } else {
-          throw new Error('options.exclude should be RegExp or Array.');
         }
       }
-      
+
       if (blacklistedSelector(opts.selectorBlackList, rule.selector)) return;
 
       if (opts.landscape && !rule.parent.params) {
@@ -69,27 +73,46 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
         rule.walkDecls(function(decl) {
           if (decl.value.indexOf(opts.unitToConvert) === -1) return;
           if (!satisfyPropList(decl.prop)) return;
-          
+
           landscapeRule.append(decl.clone({
             value: decl.value.replace(pxRegex, createPxReplace(opts, opts.landscapeUnit, opts.landscapeWidth))
           }));
         });
-        
+
         if (landscapeRule.nodes.length > 0) {
-          landscapeRules.push(landscapeRule); 
+          landscapeRules.push(landscapeRule);
         }
       }
 
       if (!validateParams(rule.parent.params, opts.mediaQuery)) return;
-      
+
       rule.walkDecls(function(decl, i) {
         if (decl.value.indexOf(opts.unitToConvert) === -1) return;
         if (!satisfyPropList(decl.prop)) return;
 
+        var prev = decl.prev();
+        // prev declaration is ignore conversion comment at same line
+        if (prev && prev.type === 'comment' && prev.text === ignoreNextComment) {
+          // remove comment
+          prev.remove();
+          return;
+        }
+        var next = decl.next();
+        // next declaration is ignore conversion comment at same line
+        if (next && next.type === 'comment' && next.text === ignorePrevComment) {
+          if (/\n/.test(next.raws.before)) {
+            result.warn('Unexpected comment /* ' + ignorePrevComment + ' */ must be after declaration at same line.', { node: next });
+          } else {
+            // remove comment
+            next.remove();
+            return;
+          }
+        }
+
         var unit;
         var size;
         var params = rule.parent.params;
-        
+
         if (opts.landscape && params && params.indexOf('landscape') !== -1) {
           unit = opts.landscapeUnit;
           size = opts.landscapeWidth;
@@ -97,11 +120,11 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
           unit = getUnit(decl.prop, opts);
           size = opts.viewportWidth;
         }
-        
+
         var value = decl.value.replace(pxRegex, createPxReplace(opts, unit, size));
-        
+
         if (declarationExists(decl.parent, decl.prop, value)) return;
-        
+
         if (opts.replace) {
           decl.value = value;
         } else {
@@ -109,10 +132,10 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
         }
       });
     });
-    
+
     if (landscapeRules.length > 0) {
       var landscapeRoot = new postcss.atRule({ params: '(orientation: landscape)', name: 'media' });
-      
+
       landscapeRules.forEach(function(rule) {
         landscapeRoot.append(rule);
       });
@@ -135,6 +158,27 @@ function createPxReplace(opts, viewportUnit, viewportSize) {
   };
 }
 
+function error(decl, message) {
+  throw decl.error(message, { plugin: 'postcss-px-to-viewport' });
+}
+
+function checkRegExpOrArray(options, optionName) {
+  var option = options[optionName];
+  if (!option) return;
+  if (Object.prototype.toString.call(option) === '[object RegExp]') return;
+  if (Object.prototype.toString.call(option) === '[object Array]') {
+    var bad = false;
+    for (var i = 0; i < option.length; i++) {
+      if (Object.prototype.toString.call(option[i]) !== '[object RegExp]') {
+        bad = true;
+        break;
+      }
+    }
+    if (!bad) return;
+  }
+  throw new Error('options.' + optionName + ' should be RegExp or Array of RegExp.');
+}
+
 function toFixed(number, precision) {
   var multiplier = Math.pow(10, precision + 1),
     wholeNumber = Math.floor(number * multiplier);
@@ -147,20 +191,6 @@ function blacklistedSelector(blacklist, selector) {
     if (typeof regex === 'string') return selector.indexOf(regex) !== -1;
     return selector.match(regex);
   });
-}
-
-function isExclude(reg, file) {
-  if (Object.prototype.toString.call(reg) !== '[object RegExp]') {
-    throw new Error('options.exclude should be RegExp.');
-  }
-  return file.match(reg) !== null;
-}
-
-function isInclude(reg, file) {
-  if (Object.prototype.toString.call(reg) !== '[object RegExp]') {
-    throw new Error('options.include should be RegExp.');
-  }
-  return file.match(reg) !== null;
 }
 
 function declarationExists(decls, prop, value) {

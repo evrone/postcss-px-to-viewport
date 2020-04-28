@@ -19,6 +19,34 @@
   }
 }
 
+.class4-ignore::before {
+  content: '';
+  width: 10px;
+  padding: 3.125vw;
+  height: 10px;
+  border: solid 2px #000;
+}
+.class5-bad-ignore {
+  /* px-to-viewport-ignore */
+  width: 3.125vw;
+  /* px-to-viewport-ignore */
+  height: 3.125vw;
+  /* px-to-viewport-ignore-next */
+}
+
+@keyframes move {
+  0% {
+    transform: translate(0, 0);
+  }
+  /* px-to-viewport-ignore-next */
+  50% {
+    transform: translate(10px, -10px);
+  }
+  100% {
+    transform: translate(10px, -10px); /* px-to-viewport-ignore */
+  }
+}
+
 /*
 .class {
     font-size: 16px;

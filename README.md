@@ -5,11 +5,6 @@ English | [中文](README_CN.md)
 
 A plugin for [PostCSS](https://github.com/postcss/postcss) that generates viewport units (vw, vh, vmin, vmax) from pixel units.
 
-<a href="https://evrone.com/?utm_source=postcss-px-to-viewport">
-  <img src="https://user-images.githubusercontent.com/417688/34437029-dbfe4ee6-ecab-11e7-9d80-2b274b4149b3.png"
-       alt="Sponsored by Evrone" width="231">
-</a>
-
 ## Demo
 
 If your project involves a fixed width, this script will help to convert pixels into viewport units.
@@ -27,6 +22,10 @@ If your project involves a fixed width, this script will help to convert pixels 
 }
 
 .class2 {
+  padding-top: 10px; /* px-to-viewport-ignore */
+  /* px-to-viewport-ignore-next */
+  padding-bottom: 10px;
+  /* Any other comment */
   border: 1px solid black;
   margin-bottom: 1px;
   font-size: 20px;
@@ -53,6 +52,9 @@ If your project involves a fixed width, this script will help to convert pixels 
 }
 
 .class2 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  /* Any other comment */
   border: 1px solid black;
   margin-bottom: 1px;
   font-size: 6.25vw;
@@ -120,17 +122,61 @@ Default Options:
 - `minPixelValue` (Number) Set the minimum pixel value to replace.
 - `mediaQuery` (Boolean) Allow px to be converted in media queries.
 - `replace` (Boolean) replaces rules containing vw instead of adding fallbacks.
-- `exclude` (Array or Regexp) Ignore some files like 'node_modules'
+- `exclude` (Regexp or Array of Regexp) Ignore some files like 'node_modules'
     - If value is regexp, will ignore the matches files.
     - If value is array, the elements of the array are regexp.
-- `include` (Array or Regexp) If `include` is set, only matching files will be converted, for example, only files under 'src/mobile'
+- `include` (Regexp or Array of Regexp) If `include` is set, only matching files will be converted,
+    for example, only files under `src/mobile/` (`include: /\/src\/mobile\//`)
     - If the value is regexp, the matching file will be included, otherwise it will be excluded.
     - If value is array, the elements of the array are regexp.
 - `landscape` (Boolean) Adds `@media (orientation: landscape)` with values converted via `landscapeWidth`.
 - `landscapeUnit` (String) Expected unit for `landscape` option
 - `landscapeWidth` (Number) Viewport width for landscape orientation.
 
-> `exclude` and` include` can be set together, and the intersection of the two rules will be taken.
+> `exclude` and `include` can be set together, and the intersection of the two rules will be taken.
+
+#### Ignoring
+
+You can use special comments for ignore conversion of single lines:
+- `/* px-to-viewport-ignore-next */` — on a separate line, prevents conversion on the next line.
+- `/* px-to-viewport-ignore */` — after the property on the right, prevents conversion on the same line.
+
+Example:
+```css
+/* example input: */
+.class {
+  /* px-to-viewport-ignore-next */
+  width: 10px;
+  padding: 10px;
+  height: 10px; /* px-to-viewport-ignore */
+  border: solid 2px #000; /* px-to-viewport-ignore */
+}
+
+/* example output: */
+.class {
+  width: 10px;
+  padding: 3.125vw;
+  height: 10px;
+  border: solid 2px #000;
+}
+```
+
+There are several more reasons why your pixels may not convert, the following options may affect this:
+`propList`, `selectorBlackList`, `minPixelValue`, `mediaQuery`, `exclude`, `include`.
+
+#### Use with PostCss configuration file
+
+add to your `postcss.config.js`
+```js
+module.exports = {
+  plugins: {
+    // ...
+    'postcss-px-to-viewport': {
+      // options
+    }
+  }
+}
+```
 
 #### Use with gulp-postcss
 
@@ -155,19 +201,10 @@ gulp.task('css', function () {
 });
 ```
 
-#### Use with PostCss configuration file
+## Contributing
 
-add to your `postcss.config.js`
-```js
-module.exports = {
-  plugins: {
-    // ...
-    'postcss-px-to-viewport': {
-      // options
-    }
-  }
-}
-```
+Please read [Code of Conduct](CODE-OF-CONDUCT.md)
+and [Contributing Guidelines](CONTRIBUTING.md) for submitting pull requests to us.
 
 ## Running the tests
 
@@ -180,17 +217,13 @@ Then run the tests via npm script:
 $ npm run test
 ```
 
-## Contributing
+## Changelog
 
-Please read [Code of Conduct](CODE-OF-CONDUCT.md) and [Contributing Guidelines](CONTRIBUTING.md) for submitting pull requests to us.
+The changelog is [here](CHANGELOG.md).
 
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/evrone/postcss-px-to-viewport/tags). 
-
-## Changelog
-
-The changelog is [here](CHANGELOG.md).
 
 ## Authors
 
@@ -202,6 +235,15 @@ See also the list of [contributors](https://github.com/evrone/postcss-px-to-view
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+## Sponsors
+
+Visit [Evrone](https://evrone.com/) website to get more information about the [projects](https://evrone.com/cases) build.
+
+<a href="https://evrone.com/?utm_source=postcss-px-to-viewport">
+  <img src="https://user-images.githubusercontent.com/417688/34437029-dbfe4ee6-ecab-11e7-9d80-2b274b4149b3.png"
+       alt="Sponsored by Evrone" width="231" />
+</a>
 
 ## Acknowledgments
 

@@ -19,6 +19,35 @@
   }
 }
 
+.class4-ignore::before {
+  content: '';
+  /* px-to-viewport-ignore-next */
+  width: 10px;
+  padding: 10px;
+  height: 10px; /* px-to-viewport-ignore */
+  border: solid 2px #000; /* px-to-viewport-ignore */
+}
+.class5-bad-ignore {
+  /* px-to-viewport-ignore */
+  width: 10px;
+  /* px-to-viewport-ignore */
+  height: 10px;
+  /* px-to-viewport-ignore-next */
+}
+
+@keyframes move {
+  0% {
+    transform: translate(0, 0);
+  }
+  /* px-to-viewport-ignore-next */
+  50% {
+    transform: translate(10px, -10px);
+  }
+  100% {
+    transform: translate(10px, -10px); /* px-to-viewport-ignore */
+  }
+}
+
 /*
 .class {
     font-size: 16px;

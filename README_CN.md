@@ -5,11 +5,6 @@
 
 将px单位转换为视口单位的 (vw, vh, vmin, vmax) 的 [PostCSS](https://github.com/postcss/postcss) 插件.
 
-<a href="https://evrone.com/?utm_source=postcss-px-to-viewport">
-  <img src="https://user-images.githubusercontent.com/417688/34437029-dbfe4ee6-ecab-11e7-9d80-2b274b4149b3.png"
-       alt="Sponsored by Evrone" width="231">
-</a>
-
 ## 简介
 
 如果你的样式需要做根据视口大小来调整宽度，这个脚本可以将你CSS中的px单位转化为vw，1vw等于1/100视口宽度。
@@ -27,6 +22,10 @@
 }
 
 .class2 {
+  padding-top: 10px; /* px-to-viewport-ignore */
+  /* px-to-viewport-ignore-next */
+  padding-bottom: 10px;
+  /* Any other comment */
   border: 1px solid black;
   margin-bottom: 1px;
   font-size: 20px;
@@ -53,6 +52,9 @@
 }
 
 .class2 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  /* Any other comment */
   border: 1px solid black;
   margin-bottom: 1px;
   font-size: 6.25vw;
@@ -124,6 +126,7 @@ $ yarn add -D postcss-px-to-viewport
     - 如果值是一个正则表达式，那么匹配这个正则的文件会被忽略
     - 如果传入的值是一个数组，那么数组里的值必须为正则
 - `include` (Array or Regexp) 如果设置了`include`，那将只有匹配到的文件才会被转换，例如只转换 'src/mobile' 下的文件
+    (`include: /\/src\/mobile\//`)
     - 如果值是一个正则表达式，将包含匹配的文件，否则将排除该文件
     - 如果传入的值是一个数组，那么数组里的值必须为正则
 - `landscape` (Boolean) 是否添加根据 `landscapeWidth` 生成的媒体查询条件 `@media (orientation: landscape)`
@@ -131,6 +134,49 @@ $ yarn add -D postcss-px-to-viewport
 - `landscapeWidth` (Number) 横屏时使用的视口宽度
 
 > `exclude`和`include`是可以一起设置的，将取两者规则的交集。
+
+#### Ignoring (需要翻译帮助。)
+
+You can use special comments for ignore conversion of single lines:
+- `/* px-to-viewport-ignore-next */` — on a separate line, prevents conversion on the next line.
+- `/* px-to-viewport-ignore */` — after the property on the right, prevents conversion on the same line.
+
+Example:
+```css
+/* example input: */
+.class {
+  /* px-to-viewport-ignore-next */
+  width: 10px;
+  padding: 10px;
+  height: 10px; /* px-to-viewport-ignore */
+  border: solid 2px #000; /* px-to-viewport-ignore */
+}
+
+/* example output: */
+.class {
+  width: 10px;
+  padding: 3.125vw;
+  height: 10px;
+  border: solid 2px #000;
+}
+```
+
+There are several more reasons why your pixels may not convert, the following options may affect this:
+`propList`, `selectorBlackList`, `minPixelValue`, `mediaQuery`, `exclude`, `include`.
+
+#### 使用PostCss配置文件时
+
+在`postcss.config.js`添加如下配置
+```js
+module.exports = {
+  plugins: {
+    // ...
+    'postcss-px-to-viewport': {
+      // options
+    }
+  }
+}
+```
 
 #### 直接在gulp中使用，添加gulp-postcss
 
@@ -155,19 +201,10 @@ gulp.task('css', function () {
 });
 ```
 
-#### 使用PostCss配置文件时
+## 参与贡献
 
-在`postcss.config.js`添加如下配置
-```js
-module.exports = {
-  plugins: {
-    // ...
-    'postcss-px-to-viewport': {
-      // options
-    }
-  }
-}
-```
+在提PR之前，请先阅读 [代码指南](CODE-OF-CONDUCT.md)
+和 [贡献指南](CONTRIBUTING.md)
 
 ## 测试
 
@@ -180,17 +217,13 @@ $ npm install
 $ npm run test
 ```
 
-## 参与贡献
+## Changelog
 
-在提PR之前，请先阅读 [代码指南](CODE-OF-CONDUCT.md) 和 [贡献指南](CONTRIBUTING.md)
+变更日志在 [这](CHANGELOG.md).
 
 ## 版本跟踪
 
 使用 [SemVer](http://semver.org/) 做版本跟踪， 可用版本可在[这](https://github.com/evrone/postcss-px-to-viewport/tags)看到
-
-## Changelog
-
-变更日志在 [这](CHANGELOG.md).
 
 ## 作者
 
@@ -202,6 +235,15 @@ $ npm run test
 ## 许可
 
 本项目使用 [MIT License](LICENSE).
+
+## 赞助商
+
+访问 [Evrone](https://evrone.com/)网站以获取有关[项目构建](https://evrone.com/cases)的更多信息。
+
+<a href="https://evrone.com/?utm_source=postcss-px-to-viewport">
+  <img src="https://user-images.githubusercontent.com/417688/34437029-dbfe4ee6-ecab-11e7-9d80-2b274b4149b3.png"
+       alt="Sponsored by Evrone" width="231" />
+</a>
 
 ## 借鉴自
 

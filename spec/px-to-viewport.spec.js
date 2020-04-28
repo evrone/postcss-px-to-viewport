@@ -605,5 +605,34 @@ describe('landscape', function() {
     var expected = '.rule { font-size: 15vw }';
 
     expect(processed).toBe(expected);
-  })
+  });
+});
+
+describe('/* px-to-viewport-ignore */ & /* px-to-viewport-ignore-next */', function() {
+  it('should ignore right-commented', function() {
+    var css = '.rule { font-size: 15px; /* simple comment */ width: 100px; /* px-to-viewport-ignore */ height: 50px; }';
+    var expected = '.rule { font-size: 4.6875vw; /* simple comment */ width: 100px; height: 15.625vw; }';
+
+    var processed = postcss(pxToViewport()).process(css).css;
+
+    expect(processed).toBe(expected);
+  });
+
+  it('should ignore right-commented in multiline-css', function() {
+    var css = '.rule {\n  font-size: 15px;\n  width: 100px; /*px-to-viewport-ignore*/\n  height: 50px;\n}';
+    var expected = '.rule {\n  font-size: 4.6875vw;\n  width: 100px;\n  height: 15.625vw;\n}';
+
+    var processed = postcss(pxToViewport()).process(css).css;
+
+    expect(processed).toBe(expected);
+  });
+
+  it('should ignore before-commented in multiline-css', function() {
+    var css = '.rule {\n  font-size: 15px;\n  /*px-to-viewport-ignore-next*/\n  width: 100px;\n  /*px-to-viewport-ignore*/\n  height: 50px;\n}';
+    var expected = '.rule {\n  font-size: 4.6875vw;\n  width: 100px;\n  /*px-to-viewport-ignore*/\n  height: 15.625vw;\n}';
+
+    var processed = postcss(pxToViewport()).process(css).css;
+
+    expect(processed).toBe(expected);
+  });
 });
