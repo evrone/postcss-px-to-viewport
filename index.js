@@ -170,5 +170,11 @@ function declarationExists(decls, prop, value) {
 }
 
 function validateParams(params, mediaQuery) {
+  if (Object.prototype.toString.call(mediaQuery) === '[object RegExp]') {
+    return mediaQuery.test(params)
+  } else if (Object.prototype.toString.call(mediaQuery) === '[object Array]') {
+    return mediaQuery.some(mq => mq.test(params))
+  }
+  
   return !params || (params && mediaQuery);
 }

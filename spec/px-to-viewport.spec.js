@@ -221,6 +221,16 @@ describe('mediaQuery', function () {
 
     expect(processed).toBe(expected);
   });
+
+  it('should only replace px inside media queries if opts.mediaQuery is a RegExp or RegExp array', function() {
+    var options = {
+      mediaQuery: /max-width:\s*750px/
+    };
+    var processed = postcss(pxToViewport(options)).process('h1 { font-size: 32px } @media (max-width: 750px) { .rule { font-size: 16px } } @media (min-width: 751px) { .rule { font-size: 18px } }').css;
+    var expected = 'h1 { font-size: 32px } @media (max-width: 750px) { .rule { font-size: 5vw } } @media (min-width: 751px) { .rule { font-size: 18px } }';
+
+    expect(processed).toBe(expected);
+  });
   
   it('should replace px inside media queries if it has params orientation landscape and landscape option', function() {
     var options = {
