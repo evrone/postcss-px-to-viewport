@@ -161,7 +161,7 @@ add to your `postcss.config.js`
 ```js
 module.exports = {
   plugins: {
-    ...
+    // ...
     'postcss-px-to-viewport': {
       // options
     }
@@ -171,9 +171,9 @@ module.exports = {
 
 ## Running the tests
 
-In order to run tests, you need to install `jasmine-node` globally:
+In order to run tests, you need to install dev-packages:
 ```
-$ npm install jasmine-node -g
+$ npm install
 ```
 Then run the tests via npm script:
 ```

@@ -1,7 +1,7 @@
 # postcss-px-to-viewport
 [![NPM version](https://badge.fury.io/js/postcss-px-to-viewport.svg)](http://badge.fury.io/js/postcss-px-to-viewport)
 
-[English](README.md) | 中文 
+[English](README.md) | 中文
 
 将px单位转换为视口单位的 (vw, vh, vmin, vmax) 的 [PostCSS](https://github.com/postcss/postcss) 插件.
 
@@ -161,7 +161,7 @@ gulp.task('css', function () {
 ```js
 module.exports = {
   plugins: {
-    ...
+    // ...
     'postcss-px-to-viewport': {
       // options
     }
@@ -171,9 +171,9 @@ module.exports = {
 
 ## 测试
 
-为了跑测试案例, 你需要全局安装 `jasmine-node` :
+为了跑测试案例，您需要安装开发套件:
 ```
-$ npm install jasmine-node -g
+$ npm install
 ```
 然后输入下面的命令:
 ```

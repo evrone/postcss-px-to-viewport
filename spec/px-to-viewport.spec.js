@@ -1,11 +1,9 @@
-// Jasmine unit tests
 // To run tests, run these commands from the project root:
-// 1. `npm install -g jasmine-node`
-// 2. `jasmine-node spec`
+// 1. `npm install`
+// 2. `npm test`
 
 /* global describe, it, expect */
 
-'use strict';
 var postcss = require('postcss');
 var pxToViewport = require('..');
 var basicCSS = '.rule { font-size: 15px }';
@@ -51,11 +49,11 @@ describe('px-to-viewport', function() {
 
     expect(processed).toBe(expected);
   });
-  
+
   it('should not replace units inside mediaQueries by default', function() {
     var expected = '@media (min-width: 500px) { .rule { font-size: 16px } }';
     var processed = postcss(pxToViewport()).process('@media (min-width: 500px) { .rule { font-size: 16px } }').css;
-    
+
     expect(processed).toBe(expected);
   })
 });
@@ -211,7 +209,7 @@ describe('mediaQuery', function () {
 
     expect(processed).toBe(expected);
   });
-  
+
   it('should not replace px inside media queries if not opts.mediaQuery', function() {
     var options = {
       mediaQuery: false
@@ -221,7 +219,7 @@ describe('mediaQuery', function () {
 
     expect(processed).toBe(expected);
   });
-  
+
   it('should replace px inside media queries if it has params orientation landscape and landscape option', function() {
     var options = {
       mediaQuery: true,
@@ -563,7 +561,7 @@ describe('landscape', function() {
 
     expect(processed).toBe(expected);
   });
-  
+
   it('should not add landscape atRule in mediaQueries', function() {
     var css = '@media (min-width: 500px) { .rule { font-size: 16px } }';
     var expected = '@media (min-width: 500px) { .rule { font-size: 5vw } }';
@@ -575,7 +573,7 @@ describe('landscape', function() {
 
     expect(processed).toBe(expected);
   });
-  
+
   it('should not replace values inside landscape atRule', function() {
     var options = {
       replace: false,
@@ -586,7 +584,7 @@ describe('landscape', function() {
 
     expect(processed).toBe(expected);
   });
-  
+
   it('should add landscape atRule with specified landscapeWidth', function() {
     var options = {
       landscape: true,
@@ -597,7 +595,7 @@ describe('landscape', function() {
 
     expect(processed).toBe(expected);
   });
-  
+
   it('should not add landscape atRule if it has no nodes', function() {
     var css = '.rule { font-size: 15vw }';
     var options = {

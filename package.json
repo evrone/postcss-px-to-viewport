@@ -11,12 +11,6 @@
   "bugs": "https://github.com/evrone/postcss-px-to-viewport/issues",
   "homepage": "https://github.com/evrone/postcss-px-to-viewport",
   "main": "index.js",
-  "scripts": {
-    "test": "jasmine-node spec"
-  },
-  "devDependencies": {
-    "jasmine-node": "~1.11.0"
-  },
   "keywords": [
     "css",
     "units",
@@ -30,8 +24,17 @@
     "postcss",
     "postcss-plugin"
   ],
+  "scripts": {
+    "test": "jest spec/*.spec.js"
+  },
   "dependencies": {
-    "object-assign": ">=4.0.1",
+    "object-assign": ">=4.0.1"
+  },
+  "devDependencies": {
+    "jest": "^25.4.0",
+    "postcss": ">=5.0.2"
+  },
+  "peerDependencies": {
     "postcss": ">=5.0.2"
   }
 }
