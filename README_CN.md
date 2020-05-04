@@ -25,7 +25,7 @@
   padding-top: 10px; /* px-to-viewport-ignore */
   /* px-to-viewport-ignore-next */
   padding-bottom: 10px;
-  /* Any other comment */
+  /* 其他注释 */
   border: 1px solid black;
   margin-bottom: 1px;
   font-size: 20px;
@@ -54,7 +54,7 @@
 .class2 {
   padding-top: 10px;
   padding-bottom: 10px;
-  /* Any other comment */
+  /* 其他注释 */
   border: 1px solid black;
   margin-bottom: 1px;
   font-size: 6.25vw;
@@ -135,15 +135,15 @@ $ yarn add -D postcss-px-to-viewport
 
 > `exclude`和`include`是可以一起设置的，将取两者规则的交集。
 
-#### Ignoring (需要翻译帮助。)
+#### 忽略转换
 
-You can use special comments for ignore conversion of single lines:
-- `/* px-to-viewport-ignore-next */` — on a separate line, prevents conversion on the next line.
-- `/* px-to-viewport-ignore */` — after the property on the right, prevents conversion on the same line.
+你可以使用专门的注释来忽略对单行的转换：
+- `/* px-to-viewport-ignore-next */` — 独占一行，禁止下一行的转换；
+- `/* px-to-viewport-ignore */` — 注释在属性的右侧，禁止该行的转换。
 
-Example:
+例子：
 ```css
-/* example input: */
+/* 示例输入： */
 .class {
   /* px-to-viewport-ignore-next */
   width: 10px;
@@ -152,7 +152,7 @@ Example:
   border: solid 2px #000; /* px-to-viewport-ignore */
 }
 
-/* example output: */
+/* 示例输出： */
 .class {
   width: 10px;
   padding: 3.125vw;
@@ -161,7 +161,7 @@ Example:
 }
 ```
 
-There are several more reasons why your pixels may not convert, the following options may affect this:
+另外如下选项也可能是导致你的 px 单位不会被转换的原因：
 `propList`, `selectorBlackList`, `minPixelValue`, `mediaQuery`, `exclude`, `include`.
 
 #### 使用PostCss配置文件时
