@@ -1,0 +1,55 @@
+.class {
+  margin: -10px .5vh;
+  padding: 5vmin 9.5rem 1rem;
+  border: 3px solid black;
+  border-bottom-width: 1px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.class2 {
+  border: 1px solid black;
+  margin-bottom: 1px;
+  font-size: 20rem;
+  line-height: 30px;
+}
+@media (min-width: 750px) {
+  .class3 {
+    font-size: 16px;
+    line-height: 22rem;
+  }
+}
+
+.class4-ignore::before {
+  content: '';
+  /* px-to-viewport-ignore-next */
+  width: 10px;
+  padding: 10px;
+  height: 10rem; /* px-to-viewport-ignore */
+  border: solid 2px #000; /* px-to-viewport-ignore */
+}
+.class5-bad-ignore {
+  /* px-to-viewport-ignore */
+  width: 10rem;
+  /* px-to-viewport-ignore */
+  height: 10px;
+  /* px-to-viewport-ignore-next */
+}
+
+@keyframes move {
+  0% {
+    transform: translate(0, 0);
+  }
+  /* px-to-viewport-ignore-next */
+  50% {
+    transform: translate(10px, -10px);
+  }
+  100% {
+    transform: translate(10px, -10px); /* px-to-viewport-ignore */
+  }
+}
+
+/*
+.class {
+    font-size: 16px;
+}
+*/

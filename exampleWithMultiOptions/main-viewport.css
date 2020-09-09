@@ -1,0 +1,54 @@
+.class {
+  margin: -3.125vw .5vh;
+  padding: 5vmin 2.96875vw 1rem;
+  border: 0.9375vw solid black;
+  border-bottom-width: 1px;
+  font-size: 4.375vw;
+  line-height: 6.25vw;
+}
+.class2 {
+  border: 1px solid black;
+  margin-bottom: 1px;
+  font-size: 6.25vw;
+  line-height: 9.375vw;
+}
+@media (min-width: 750px) {
+  .class3 {
+    font-size: 16px;
+    line-height: 22rem;
+  }
+}
+
+.class4-ignore::before {
+  content: '';
+  width: 10px;
+  padding: 3.125vw;
+  height: 10rem;
+  border: solid 2px #000;
+}
+.class5-bad-ignore {
+  /* px-to-viewport-ignore */
+  width: 3.125vw;
+  /* px-to-viewport-ignore */
+  height: 3.125vw;
+  /* px-to-viewport-ignore-next */
+}
+
+@keyframes move {
+  0% {
+    transform: translate(0, 0);
+  }
+  /* px-to-viewport-ignore-next */
+  50% {
+    transform: translate(10px, -10px);
+  }
+  100% {
+    transform: translate(10px, -10px); /* px-to-viewport-ignore */
+  }
+}
+
+/*
+.class {
+    font-size: 16px;
+}
+*/
