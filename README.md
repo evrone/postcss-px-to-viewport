@@ -178,6 +178,20 @@ module.exports = {
 }
 ```
 
+or use multi options
+```js
+module.exports = {
+  plugins: {
+    // ...
+    'postcss-px-to-viewport': [{
+      // options 1
+    },{
+      // options 2
+    }]
+  }
+}
+```
+
 #### Use with gulp-postcss
 
 add to your `gulpfile.js`:
