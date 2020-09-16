@@ -25,7 +25,7 @@ var defaults = {
 var ignoreNextComment = 'px-to-viewport-ignore-next';
 var ignorePrevComment = 'px-to-viewport-ignore';
 
-module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
+module.exports = function (options) {
   var opts = objectAssign({}, defaults, options);
 
   checkRegExpOrArray(opts, 'exclude');
@@ -134,7 +134,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
     });
 
     if (landscapeRules.length > 0) {
-      var landscapeRoot = new postcss.atRule({ params: '(orientation: landscape)', name: 'media' });
+      var landscapeRoot = new postcss.AtRule({ params: '(orientation: landscape)', name: 'media' });
 
       landscapeRules.forEach(function(rule) {
         landscapeRoot.append(rule);
@@ -142,7 +142,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
       css.append(landscapeRoot);
     }
   };
-});
+};
 
 function getUnit(prop, opts) {
   return prop.indexOf('font') === -1 ? opts.viewportUnit : opts.fontViewportUnit;
