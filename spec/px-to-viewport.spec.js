@@ -324,6 +324,19 @@ describe('exclude', function () {
 
     expect(processed).toBe(covered);
   });
+
+  it('when using incorrect type at the time, should throw an error.', function () {
+    var options = {
+      exclude: 'incorrectTypeAsString'
+    };
+    var processedFunction = () => {
+      postcss(pxToViewport(options)).process(rules, {
+        from: '/example/main.css'
+      }).css;
+    }
+
+    expect(processedFunction).toThrowError('options.exclude should be RegExp or Array of RegExp.');
+  });
 });
 
 describe('include', function () {
@@ -371,6 +384,19 @@ describe('include', function () {
     }).css;
 
     expect(processed).toBe(covered);
+  });
+
+  it('when using incorrect type at the time, should throw an error.', function () {
+    var options = {
+      include: 'incorrectTypeAsString'
+    };
+    var processedFunction = () => {
+      postcss(pxToViewport(options)).process(rules, {
+        from: '/example/main.css'
+      }).css;
+    }
+
+    expect(processedFunction).toThrowError('options.include should be RegExp or Array of RegExp.');
   });
 });
 
@@ -634,5 +660,46 @@ describe('/* px-to-viewport-ignore */ & /* px-to-viewport-ignore-next */', funct
     var processed = postcss(pxToViewport()).process(css).css;
 
     expect(processed).toBe(expected);
+  });
+});
+
+describe('multiple-option-groups', function() {
+  it('should work on the readme example', function () {
+    var input = 'mobile h1 { margin: 0 0 20rpx; font-size: 32rpx; line-height: 2; letter-spacing: 1rpx; } desktop h1 { margin: 0 0 20dpx; font-size: 32dpx; line-height: 2; letter-spacing: 1dpx; }';
+    var output = 'mobile h1 { margin: 0 0 2.66667vw; font-size: 4.26667vw; line-height: 2; letter-spacing: 0.13333vw; } desktop h1 { margin: 0 0 1.04167vw; font-size: 1.66667vw; line-height: 2; letter-spacing: 0.05208vw; }';
+    var options = [
+      {
+        unitToConvert: 'rpx',
+        viewportWidth: 750,
+        viewportUnit: 'vw',
+        minPixelValue: 0
+      }, {
+        unitToConvert: 'dpx',
+        viewportWidth: 1920,
+        viewportUnit: 'vw',
+        minPixelValue: 0
+      }
+    ];
+    var processed = postcss(pxToViewport(options)).process(input).css;
+
+    expect(processed).toBe(output);
+  });
+
+  it('should not work with empty option array', function () {
+    var input = 'h1 { margin: 0 0 20px; font-size: 32px; line-height: 2; letter-spacing: 1px; }';
+    var output = 'h1 { margin: 0 0 20px; font-size: 32px; line-height: 2; letter-spacing: 1px; }';
+    var options = [];
+    var processed = postcss(pxToViewport(options)).process(input).css;
+
+    expect(processed).toBe(output);
+  });
+
+  it('should work with empty option object with default settings', function () {
+    var input = 'h1 { margin: 0 0 20px; font-size: 32px; line-height: 2; letter-spacing: 1px; }';
+    var output = 'h1 { margin: 0 0 6.25vw; font-size: 10vw; line-height: 2; letter-spacing: 1px; }';
+    var options = [{}];
+    var processed = postcss(pxToViewport(options)).process(input).css;
+
+    expect(processed).toBe(output);
   });
 });

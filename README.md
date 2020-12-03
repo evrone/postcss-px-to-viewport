@@ -135,6 +135,30 @@ Default Options:
 
 > `exclude` and `include` can be set together, and the intersection of the two rules will be taken.
 
+Or you can set up multiple option groups like this:
+
+```js
+[
+  {
+    unitToConvert: 'rpx',
+    viewportWidth: 750,
+    viewportUnit: 'vw',
+    minPixelValue: 0
+  }, {
+    unitToConvert: 'dpx',
+    viewportWidth: 1920,
+    viewportUnit: 'vw',
+    minPixelValue: 0
+  }
+]
+```
+
+Passing in an empty array (`[]`) will not convert any units.
+
+Each option group will be merged with the default settings, so you can easily define multiple custom units and conversion rules.
+
+> If the `unitToConvert` in multiple sets of settings is the same, the last declared one may override the previously declared.
+
 #### Ignoring
 
 You can use special comments for ignore conversion of single lines:
