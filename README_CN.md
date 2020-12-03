@@ -135,13 +135,35 @@ $ yarn add -D postcss-px-to-viewport
 
 > `exclude`和`include`是可以一起设置的，将取两者规则的交集。
 
-#### Ignoring (需要翻译帮助。)
+你也可以同时设置多组单位转换规则:
 
-You can use special comments for ignore conversion of single lines:
-- `/* px-to-viewport-ignore-next */` — on a separate line, prevents conversion on the next line.
-- `/* px-to-viewport-ignore */` — after the property on the right, prevents conversion on the same line.
+```js
+[
+  {
+    unitToConvert: 'rpx',
+    viewportWidth: 750,
+    viewportUnit: 'vw',
+    minPixelValue: 0
+  }, {
+    unitToConvert: 'dpx',
+    viewportWidth: 1920,
+    viewportUnit: 'vw',
+    minPixelValue: 0
+  }
+]
+```
 
-Example:
+传入空数组（`[]`）作为参数时，不会转化任何单位。数组中的所有设置都会和默认设置合并，这样就可以轻松声明多个自定义单位或者转化规则。
+
+> 如果多个设置中的 `unitToConvert` 相同，通常只有最后一个设置会生效。 
+
+#### Ignoring
+
+你可以使用如下的特殊注释来忽略单行的转换：
+- `/* px-to-viewport-ignore-next */` — 声明在某行之上，会忽略下一行的转换。
+- `/* px-to-viewport-ignore */` — 声明在某属性的右侧，会忽略本行的转换。
+
+例子：
 ```css
 /* example input: */
 .class {
@@ -161,7 +183,7 @@ Example:
 }
 ```
 
-There are several more reasons why your pixels may not convert, the following options may affect this:
+以下配置项同样有能力阻止单位转换:
 `propList`, `selectorBlackList`, `minPixelValue`, `mediaQuery`, `exclude`, `include`.
 
 #### 使用PostCss配置文件时
