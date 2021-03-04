@@ -32,9 +32,9 @@
   },
   "devDependencies": {
     "jest": "^25.4.0",
-    "postcss": ">=5.0.2"
+    "postcss": "^8.0.0"
   },
   "peerDependencies": {
-    "postcss": ">=5.0.2"
+    "postcss": "^8.0.0"
   }
 }
