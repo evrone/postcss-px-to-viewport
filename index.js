@@ -35,7 +35,7 @@ module.exports = function (options) {
   var satisfyPropList = createPropListMatcher(opts.propList);
   var landscapeRules = [];
   return {
-    postcssPlugin: 'px-to-viewport-ignore',
+    postcssPlugin: 'postcss-px-to-viewport',
     Once(css, { result }) {
       css.walkRules(function (rule) {
         // Add exclude option to ignore some files like 'node_modules'
