@@ -67,10 +67,12 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
       if (blacklistedSelector(opts.selectorBlackList, rule.selector)) return;
 
+      if (blacklistedPath(opts.blacklistPath, file)) return;
+
       if (opts.landscape && !rule.parent.params) {
         var landscapeRule = rule.clone().removeAll();
 
-        rule.walkDecls(function(decl) {
+        rule.walkDecls(function (decl) {
           if (decl.value.indexOf(opts.unitToConvert) === -1) return;
           if (!satisfyPropList(decl.prop)) return;
 
@@ -86,7 +88,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
       if (!validateParams(rule.parent.params, opts.mediaQuery)) return;
 
-      rule.walkDecls(function(decl, i) {
+      rule.walkDecls(function (decl, i) {
         if (decl.value.indexOf(opts.unitToConvert) === -1) return;
         if (!satisfyPropList(decl.prop)) return;
 
@@ -136,7 +138,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
     if (landscapeRules.length > 0) {
       var landscapeRoot = new postcss.atRule({ params: '(orientation: landscape)', name: 'media' });
 
-      landscapeRules.forEach(function(rule) {
+      landscapeRules.forEach(function (rule) {
         landscapeRoot.append(rule);
       });
       css.append(landscapeRoot);
@@ -185,6 +187,14 @@ function toFixed(number, precision) {
   return Math.round(wholeNumber / 10) * 10 / multiplier;
 }
 
+function blacklistedPath(blacklist, path) {
+  if (typeof path !== 'string') return;
+  return blacklist.some((regex) => {
+    if (typeof regex === 'string') return path.indexOf(regex) !== -1;
+    return path.match(regex);
+  });
+}
+
 function blacklistedSelector(blacklist, selector) {
   if (typeof selector !== 'string') return;
   return blacklist.some(function (regex) {
@@ -195,7 +205,7 @@ function blacklistedSelector(blacklist, selector) {
 
 function declarationExists(decls, prop, value) {
   return decls.some(function (decl) {
-      return (decl.prop === prop && decl.value === value);
+    return (decl.prop === prop && decl.value === value);
   });
 }
 
