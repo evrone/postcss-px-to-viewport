@@ -1,4 +1,8 @@
-# postcss-px-to-viewport
+# postcss8-px-to-viewport
+
+此项目是 (postcss-px-to-viewport)[https://github.com/evrone/postcss-px-to-viewport] 的一个 fork，我将其迁移至了 PostCSS8 版本。
+
+## postcss-px-to-viewport
 [![NPM version](https://badge.fury.io/js/postcss-px-to-viewport.svg)](http://badge.fury.io/js/postcss-px-to-viewport)
 
 [English](README.md) | 中文
