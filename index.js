@@ -118,7 +118,10 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
           size = opts.landscapeWidth;
         } else {
           unit = getUnit(decl.prop, opts);
-          size = opts.viewportWidth;
+          size = typeof opts.viewportWidth === "function"
+            ? opts.viewportWidth(css.source.input)
+            : opts.viewportWidth;
+            
         }
 
         var value = decl.value.replace(pxRegex, createPxReplace(opts, unit, size));

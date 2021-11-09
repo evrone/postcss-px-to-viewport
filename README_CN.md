@@ -178,6 +178,21 @@ module.exports = {
 }
 ```
 
+ `viewportWidth` as function
+```js
+module.exports = {
+  plugins: {
+    // ...
+    'postcss-px-to-viewport': {
+      // options
+      viewportWidth({ file }) {
+        return file.indexOf('vant') !== -1 ? 375 : 750
+      },
+    }
+  }
+}
+```
+
 #### 直接在gulp中使用，添加gulp-postcss
 
 在 `gulpfile.js` 添加如下配置:
