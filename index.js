@@ -17,6 +17,8 @@ var defaults = {
   minPixelValue: 1,
   mediaQuery: false,
   replace: true,
+  exclude: undefined,
+  include: undefined,
   landscape: false,
   landscapeUnit: 'vw',
   landscapeWidth: 568
@@ -25,7 +27,7 @@ var defaults = {
 var ignoreNextComment = 'px-to-viewport-ignore-next';
 var ignorePrevComment = 'px-to-viewport-ignore';
 
-module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
+module.exports = (options = {}) => {
   var opts = objectAssign({}, defaults, options);
 
   checkRegExpOrArray(opts, 'exclude');
@@ -142,7 +144,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
       css.append(landscapeRoot);
     }
   };
-});
+};
 
 function getUnit(prop, opts) {
   return prop.indexOf('font') === -1 ? opts.viewportUnit : opts.fontViewportUnit;
@@ -156,10 +158,6 @@ function createPxReplace(opts, viewportUnit, viewportSize) {
     var parsedVal = toFixed((pixels / viewportSize * 100), opts.unitPrecision);
     return parsedVal === 0 ? '0' : parsedVal + viewportUnit;
   };
-}
-
-function error(decl, message) {
-  throw decl.error(message, { plugin: 'postcss-px-to-viewport' });
 }
 
 function checkRegExpOrArray(options, optionName) {
@@ -176,7 +174,7 @@ function checkRegExpOrArray(options, optionName) {
     }
     if (!bad) return;
   }
-  throw new Error('options.' + optionName + ' should be RegExp or Array of RegExp.');
+  throw new Error('options.' + optionName + ' type is' + Object.prototype.toString.call(option) + ', should be RegExp or Array of RegExp.');
 }
 
 function toFixed(number, precision) {
@@ -191,6 +189,13 @@ function blacklistedSelector(blacklist, selector) {
     if (typeof regex === 'string') return selector.indexOf(regex) !== -1;
     return selector.match(regex);
   });
+}
+
+function isExclude(reg, file) {
+  if (Object.prototype.toString.call(reg) !== '[object RegExp]') {
+    throw new Error('options.exclude should be RegExp.');
+  }
+  return file.match(reg) !== null;
 }
 
 function declarationExists(decls, prop, value) {
