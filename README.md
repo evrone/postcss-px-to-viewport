@@ -103,7 +103,7 @@ Default Options:
   landscapeWidth: 568
 }
 ```
-- `unitToConvert` (String) unit to convert, by default, it is px.
+- `unitToConvert` (String) unit to convert, by default, it is px.Support Array, e.g: ["px","PX"]
 - `viewportWidth` (Number) The width of the viewport.
 - `unitPrecision` (Number) The decimal numbers to allow the vw units to grow to.
 - `propList` (Array) The properties that can change from px to vw.
