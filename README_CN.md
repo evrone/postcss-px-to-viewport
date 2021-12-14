@@ -103,7 +103,7 @@ $ yarn add -D postcss-px-to-viewport
   landscapeWidth: 568
 }
 ```
-- `unitToConvert` (String) 需要转换的单位，默认为"px"
+- `unitToConvert` (String) 需要转换的单位，默认为"px",支持Array, e.g: ["px","PX"]
 - `viewportWidth` (Number) 设计稿的视口宽度
 - `unitPrecision` (Number) 单位转换后保留的精度
 - `propList` (Array) 能转化为vw的属性列表

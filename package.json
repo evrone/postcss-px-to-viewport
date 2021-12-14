@@ -25,7 +25,7 @@
     "postcss-plugin"
   ],
   "scripts": {
-    "test": "jest spec/*.spec.js"
+    "test": "jest spec/*.js"
   },
   "dependencies": {
     "object-assign": ">=4.0.1"

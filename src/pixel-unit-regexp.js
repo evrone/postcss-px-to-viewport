@@ -5,10 +5,25 @@
 // Not anything inside url()
 // Any digit followed by px
 // !singlequotes|!doublequotes|!url()|pixelunit
+
+function getUnitPartPatternStr(unit) {
+  if (typeof unit === "string") {
+    return unit;
+  }
+  if (unit.length === 1) {
+    return unit[0];
+  }
+  return "(" + unit.join("|") + ")";
+}
 function getUnitRegexp(unit) {
-  return new RegExp('"[^"]+"|\'[^\']+\'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)' + unit, 'g');
+  var unitRegStr = getUnitPartPatternStr(unit);
+
+  return new RegExp(
+    "\"[^\"]+\"|'[^']+'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)" + unitRegStr,
+    "g"
+  );
 }
 
 module.exports = {
-  getUnitRegexp
+  getUnitRegexp,
 };
