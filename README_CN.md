@@ -135,15 +135,15 @@ $ yarn add -D postcss-px-to-viewport
 
 > `exclude`和`include`是可以一起设置的，将取两者规则的交集。
 
-#### Ignoring (需要翻译帮助。)
+#### 忽略转换
 
-You can use special comments for ignore conversion of single lines:
-- `/* px-to-viewport-ignore-next */` — on a separate line, prevents conversion on the next line.
-- `/* px-to-viewport-ignore */` — after the property on the right, prevents conversion on the same line.
+使用以下注释来忽略单行的转换：
+- `/* px-to-viewport-ignore-next */` — 添加在单独一行中，忽略下一行的转换
+- `/* px-to-viewport-ignore */` — 添加在要忽略的属性右侧，忽略本行的转换
 
-Example:
+示例:
 ```css
-/* example input: */
+/* 示例输入: */
 .class {
   /* px-to-viewport-ignore-next */
   width: 10px;
@@ -152,7 +152,7 @@ Example:
   border: solid 2px #000; /* px-to-viewport-ignore */
 }
 
-/* example output: */
+/* 示例输出: */
 .class {
   width: 10px;
   padding: 3.125vw;
@@ -161,7 +161,7 @@ Example:
 }
 ```
 
-There are several more reasons why your pixels may not convert, the following options may affect this:
+如果像素单位未转换成功，可能是受到以下选项的影响:
 `propList`, `selectorBlackList`, `minPixelValue`, `mediaQuery`, `exclude`, `include`.
 
 #### 使用PostCss配置文件时
