@@ -15,11 +15,13 @@ var defaults = {
   selectorBlackList: [],
   propList: ['*'],
   minPixelValue: 1,
+  maxDeviceWidth:undefined,
   mediaQuery: false,
   replace: true,
   landscape: false,
   landscapeUnit: 'vw',
-  landscapeWidth: 568
+  landscapeWidth: 568,
+ 
 };
 
 var ignoreNextComment = 'px-to-viewport-ignore-next';
@@ -153,6 +155,9 @@ function createPxReplace(opts, viewportUnit, viewportSize) {
     if (!$1) return m;
     var pixels = parseFloat($1);
     if (pixels <= opts.minPixelValue) return m;
+    if (maxDeviceWidth && pixels >= maxDeviceWidth) {
+      pixels = maxDeviceWidth
+    }
     var parsedVal = toFixed((pixels / viewportSize * 100), opts.unitPrecision);
     return parsedVal === 0 ? '0' : parsedVal + viewportUnit;
   };
