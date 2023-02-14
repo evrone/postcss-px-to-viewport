@@ -132,6 +132,53 @@ Default Options:
 - `landscape` (Boolean) Adds `@media (orientation: landscape)` with values converted via `landscapeWidth`.
 - `landscapeUnit` (String) Expected unit for `landscape` option
 - `landscapeWidth` (Number) Viewport width for landscape orientation.
+- `customConvertionOptions` (Array of Custom Convertion Objects):
+    - `viewportWidth` (Number) The width of the viewport.
+    - `viewportUnit` (String) Expected units.
+    - `matchSelectors` (Array of Regex) The selector we want to be converted
+    - `atRule` (Object) used to locate the media query:
+        - `name` (string) query type. for example 'media'.
+        - `params` (string) exact query params. for example 'only screen and (max-width: 1040px)'.
+
+#### customConvertionOptions
+
+Use this option if you want to use a different convertion options on the same css file.
+You can use: 
+ 1. an atRule - object with two fileds (params: string, name: string) - which will convert every rule under this media query.
+ 2. a selector - matchSelectors array with each selector you want  to convert in this settings.
+ 3. both - for cases you want to convert specific selector inside the atRule.`
+
+ Example:
+ ```js
+  const pxToViewportOptions = {
+    viewportWidth: 640,
+    viewportUnit: 'vw',
+    propList: ['*'],
+    selectorBlackList: [/-pf$/],
+    mediaQuery: true,
+    customConvertionOptions: [
+        { 
+          /* Will convert the selector .tablet and all of his sons to 'vw' based on a viewport width of 1536. */
+            viewportWidth: 1536,
+            viewportUnit: 'vw',
+            matchSelectors: [/^.tablet\s/],
+        },
+        { 
+          /* Will convert all rules under '@media only screen and (max-width: 961px)' to 'vw' based on a viewport width of 961. */
+            atRule: { params: 'only screen and (max-width: 961px)', name: 'media' },
+            viewportWidth: 961,
+            viewportUnit: 'vw',
+        },
+        { 
+          /* Will convert all rules containing the selectors .tablet2 and .tablet3 thats under '@media only screen and (max-width: 961px)' to 'vw' based on a viewport width of 1040. */
+            atRule: { params: 'only screen and (max-width: 1040px)', name: 'media' },
+            viewportWidth: 1040,
+            viewportUnit: 'vw',
+            matchSelectors: [/^.tablet2\s/, /^.tablet3\s/],
+        }
+    ]
+  }
+ ```
 
 > `exclude` and `include` can be set together, and the intersection of the two rules will be taken.
 
